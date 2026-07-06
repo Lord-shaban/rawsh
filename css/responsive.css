@@ -1,0 +1,242 @@
+/* ============================================
+   iCHAT — Responsive Styles
+   Mobile & tablet adaptations
+   ============================================ */
+
+/* ─── TABLET (< 900px) ─── */
+@media (max-width: 900px) {
+    /* Lobby */
+    .lobby-content {
+        flex-direction: column;
+    }
+
+    .lobby-rooms-window {
+        width: 100%;
+    }
+
+    .lobby-rooms-list {
+        max-height: 250px;
+    }
+
+    /* Chat */
+    .chat-container {
+        flex-direction: column;
+    }
+
+    .buddy-list-window {
+        width: 100%;
+        max-height: 150px;
+        order: -1;
+    }
+
+    .buddy-list-body {
+        flex-direction: row;
+    }
+
+    .buddy-list-content {
+        flex: 1;
+    }
+
+    .buddy-count {
+        writing-mode: horizontal-tb;
+        border-top: none;
+        border-left: 1px solid #DDD;
+        padding: var(--sp-2) var(--sp-3);
+        display: flex;
+        align-items: center;
+    }
+
+    .buddy-list-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sp-1);
+        margin-bottom: var(--sp-1);
+    }
+
+    .buddy-list-section-title {
+        width: 100%;
+        margin-bottom: var(--sp-1);
+    }
+
+    .buddy-item {
+        padding: var(--sp-1);
+    }
+}
+
+/* ─── MOBILE (< 600px) ─── */
+@media (max-width: 600px) {
+    /* Login */
+    .login-logo-title {
+        font-size: 18px;
+        letter-spacing: 2px;
+    }
+
+    .login-logo-subtitle {
+        font-size: 14px;
+    }
+
+    .login-dialog {
+        max-width: 100%;
+    }
+
+    .avatar-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--sp-2);
+    }
+
+    .avatar-option-icon {
+        font-size: 22px;
+    }
+
+    .avatar-option-name {
+        font-size: 8px;
+    }
+
+    .login-badges {
+        gap: var(--sp-1);
+    }
+
+    /* Lobby */
+    .lobby-content {
+        padding: var(--sp-2);
+        gap: var(--sp-2);
+    }
+
+    .lobby-rooms-list {
+        max-height: 200px;
+    }
+
+    .lobby-welcome-body {
+        padding: var(--sp-3);
+        gap: var(--sp-3);
+    }
+
+    .lobby-welcome-icon {
+        font-size: 36px;
+    }
+
+    .lobby-welcome-title {
+        font-size: var(--fs-pixel-md);
+    }
+
+    .lobby-footer {
+        padding: var(--sp-2);
+        gap: var(--sp-2);
+        flex-direction: column;
+    }
+
+    /* Chat */
+    .chat-container {
+        padding: var(--sp-1);
+        gap: var(--sp-1);
+    }
+
+    .buddy-list-window {
+        max-height: 120px;
+    }
+
+    .chat-toolbar {
+        overflow-x: auto;
+        gap: var(--sp-1);
+    }
+
+    .chat-toolbar-btn {
+        font-size: 10px;
+        padding: var(--sp-1);
+        white-space: nowrap;
+    }
+
+    .chat-messages {
+        font-size: var(--fs-md);
+    }
+
+    .chat-input {
+        font-size: var(--fs-md);
+    }
+
+    .chat-send-btn {
+        font-size: 8px;
+        padding: var(--sp-2) var(--sp-3);
+        min-width: 50px;
+    }
+
+    .room-info-bar {
+        font-size: 10px;
+    }
+
+    .win95-statusbar {
+        font-size: 9px;
+    }
+
+    .win95-taskbar {
+        height: 28px;
+    }
+
+    .win95-start-btn {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+
+    /* Settings panel */
+    .settings-panel {
+        width: 90%;
+    }
+}
+
+/* ─── SMALL MOBILE (< 400px) ─── */
+@media (max-width: 400px) {
+    .login-logo-title {
+        font-size: 14px;
+    }
+
+    .avatar-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .color-grid {
+        gap: var(--sp-1);
+    }
+
+    .color-option {
+        width: 22px;
+        height: 22px;
+    }
+
+    .lobby-welcome-title {
+        font-size: 10px;
+    }
+
+    .chat-toolbar-btn span:last-child {
+        display: none; /* Hide text, show only icons */
+    }
+}
+
+/* ─── HOVER DEVICES ONLY ─── */
+@media (hover: hover) {
+    .room-item:hover {
+        background: #E8E8FF;
+    }
+
+    .buddy-item:hover {
+        background: var(--win-menu-highlight);
+        color: var(--win-titlebar-text);
+    }
+}
+
+/* ─── REDUCED MOTION ─── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .retro-marquee-content {
+        animation: none;
+        padding-left: 0;
+    }
+
+    .crt-on::after {
+        display: none;
+    }
+}
