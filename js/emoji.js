@@ -1,125 +1,130 @@
-// ============================================
-// iCHAT — Emoji Parser
-// Convert text emoticons to emoji
-// ============================================
+/* ============================================
+   iCHAT — Emoji Picker
+   ============================================ */
 
-const EmojiParser = (() => {
-    const emojiMap = {
-        ':)':   '😊', ':-)':  '😊',
-        ':D':   '😄', ':-D':  '😄',
-        ':(': '😞', ':-(': '😞',
-        ';)':   '😉', ';-)':  '😉',
-        ':P':   '😛', ':-P':  '😛',
-        ':p':   '😛', ':-p':  '😛',
-        'XD':   '😆', 'xD':   '😆',
-        ':O':   '😮', ':-O':  '😮',
-        ':o':   '😮',
-        ":'(":  '😢',
-        '>:(': '😠',
-        'B)':   '😎', 'B-)':  '😎',
-        '<3':   '❤️',
-        '</3':  '💔',
-        ':*':   '😘',
-        'O:)':  '😇',
-        '3:)':  '😈',
-        ':|':   '😐', ':-|':  '😐',
-        ':/':   '😕', ':-/':  '😕',
-        ':$':   '😳',
-        '^_^':  '😊',
-        'T_T':  '😭',
-        '-_-':  '😑',
-        'o_O':  '🤨',
-        'O_o':  '🤨',
-        '(y)':  '👍',
-        '(n)':  '👎',
-        '(heart)': '❤️',
-        '(star)':  '⭐',
-        '(fire)':  '🔥',
-        '(100)':   '💯',
-        '(wave)':  '👋',
-        '(clap)':  '👏',
-        '(lol)':   '😂',
-        '(cry)':   '😭',
-        '(cool)':  '😎',
-        '(skull)': '💀',
-        '(ghost)': '👻',
-        '(poop)':  '💩',
-        '(music)': '🎵',
-        '(game)':  '🎮',
-        '(computer)': '🖥️',
-        '(phone)': '📱',
-        '(pizza)': '🍕',
-        '(coffee)':'☕',
-        '(beer)':  '🍺',
-        '(party)': '🎉',
-        '(rocket)':'🚀',
-        '(eyes)':  '👀',
-    };
+const EmojiPicker = {
+  categories: [
+    { id: 'smileys', icon: '😊', label: 'Smileys' },
+    { id: 'gestures', icon: '👋', label: 'Gestures' },
+    { id: 'hearts', icon: '❤️', label: 'Hearts' },
+    { id: 'animals', icon: '🐱', label: 'Animals' },
+    { id: 'food', icon: '🍕', label: 'Food' },
+    { id: 'travel', icon: '✈️', label: 'Travel' },
+    { id: 'objects', icon: '💡', label: 'Objects' },
+    { id: 'symbols', icon: '⭐', label: 'Symbols' },
+  ],
 
-    // Sort by length (longest first) to match multi-char emoticons first
-    const sortedKeys = Object.keys(emojiMap).sort((a, b) => b.length - a.length);
+  emojis: {
+    smileys: ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🫡','🤐','🤨','😐','😑','😶','🫥','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🥵','🥶','🥴','😵','🤯','🤠','🥳','🥸','😎','🤓','🧐','😕','🫤','😟','🙁','😮','😯','😲','😳','🥺','🥹','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖'],
+    gestures: ['👋','🤚','🖐️','✋','🖖','🫱','🫲','🫳','🫴','👌','🤌','🤏','✌️','🤞','🫰','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','🫵','👍','👎','✊','👊','🤛','🤜','👏','🙌','🫶','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄','🫦'],
+    hearts: ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','❤️‍🩹','❣️','💕','💞','💓','💗','💖','💘','💝','💟','♥️','🫶','😍','🥰','😘','💑','💏','💋'],
+    animals: ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🪱','🐛','🦋','🐌','🐞','🐜','🪰','🪲','🪳','🦟','🦗','🕷️','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🐘'],
+    food: ['🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🫑','🌽','🥕','🫒','🧄','🧅','🥔','🍠','🥐','🥯','🍞','🥖','🥨','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🌭','🍔','🍟','🍕','🫓','🥪','🥙','🧆','🌮','🌯','🫔','🥗','🥘','🫕','🥫','🍝','🍜','🍲','🍛','🍣','🍱','🥟','🦪','🍤','🍙','🍚','🍘','🍥','🥠','🥮','🍢','🍡','🍧','🍨','🍦','🥧','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','🌰','🥜','🍯','🥛','🍼','🫖','☕','🍵','🧃','🥤','🧋','🍶','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧉','🍾','🧊'],
+    travel: ['🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🏍️','🛵','🚲','🛴','🛹','🛼','🚁','🛩️','✈️','🛫','🛬','🪂','💺','🚀','🛸','🚆','🚇','🚈','🚉','🚊','🚝','🚞','🗺️','🗿','🗼','🏰','🏯','🏟️','🎡','🎢','🎠','⛲','⛱️','🏖️','🏝️','🏜️','🌋','⛰️','🏔️','🗻','🏕️','🛖','🏠','🏡','🏢','🏬','🏣','🏤','🏥','🏦','🏨','🏪','🏫','🏩','💒','🏛️','⛪','🕌','🕍','🛕','🕋','⛩️','🌁','🌃','🏙️','🌄','🌅','🌆','🌇','🌉','🌌'],
+    objects: ['💡','🔦','🕯️','🧯','💰','💴','💵','💶','💷','🪙','💸','💳','🧾','💎','⚖️','🪜','🧰','🪛','🔧','🔨','⚒️','🛠️','⛏️','🪚','🔩','⚙️','🪤','🧲','🔫','💣','🧨','🪓','🔪','🗡️','⚔️','🛡️','🚬','⚰️','🪦','⚱️','🏺','🔮','📿','🧿','🪬','💈','⚗️','🔭','🔬','🕳️','🩹','🩺','🩻','🩼','💊','💉','🩸','🧬','🦠','🧫','🧪','🌡️','🧹','🪠','🧺','🧻','🚽','🚰','🚿','🛁','🛀','🧼','🪥','🪒','🧽','🪣','🧴','🛎️','🔑','🗝️','🚪','🪑','🛋️','🛏️','🛌','🧸','🪆','🖼️','🪞','🪟','🛍️','🛒','🎁','🎈','🎏','🎀','🪄','🪅','🎊','🎉','🎎','🏮','🎐','🧧','✉️','📩','📨','📧','💌','📥','📤','📦','🏷️','🪧','📪','📫','📬','📭','📮','📯','📜','📃','📄','📑','🧾','📊','📈','📉','🗒️','🗓️','📆','📅','🗑️','📇','🗃️','🗳️','🗄️','📋','📁','📂','🗂️','🗞️','📰','📓','📔','📒','📕','📗','📘','📙','📚','📖','🔖','🧷','🔗','📎','🖇️','📐','📏','🧮','📌','📍','✂️','🖊️','🖋️','✒️','🖌️','🖍️','📝','✏️','🔍','🔎'],
+    symbols: ['⭐','🌟','✨','💫','⚡','🔥','💥','☀️','🌤️','⛅','🌥️','🌦️','🌧️','⛈️','🌩️','🌪️','🌫️','🌬️','🌀','🌈','☁️','❄️','☃️','⛄','☄️','💧','🌊','🎵','🎶','🎼','🎹','🥁','🎷','🎺','🪗','🎸','🪕','🎻','🪘','🎯','🎱','🎲','🎰','🧩','🎮','🕹️','🎳','🏆','🥇','🥈','🥉','🏅','🎖️','🏵️','🎗️','🎫','🎟️','🎪','✅','❌','❓','❗','‼️','⁉️','🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔘','🔲','🔳','◻️','◼️','▫️','▪️','🔷','🔶','🔹','🔸','💠','🔻','🔺','♠️','♣️','♥️','♦️','🃏','🀄','🔇','🔈','🔉','🔊','📢','📣','📯','🔔','🔕','🎃','🎄','🎆','🎇','🧨','✨','🎈','🎉','🎊','🎋','🎍','🎎','🎏','🎐','🎑','🧧']
+  },
 
-    function parse(text) {
-        let result = text;
+  currentCategory: 'smileys',
+  isOpen: false,
+  onSelect: null,
 
-        sortedKeys.forEach(emoticon => {
-            // Escape special regex characters
-            const escaped = emoticon.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            // Only replace when the emoticon is surrounded by spaces or at start/end
-            const regex = new RegExp(`(^|\\s|(?<=\\s))${escaped}($|\\s|(?=\\s))`, 'g');
-            result = result.replace(regex, (match, before, after) => {
-                return (before || '') + emojiMap[emoticon] + (after || '');
-            });
-        });
+  init(onSelectCallback) {
+    this.onSelect = onSelectCallback;
+    this.renderCategories();
+    this.renderEmojis('smileys');
+    this.bindEvents();
+  },
 
-        // Simple approach: direct replacement for standalone emoticons
-        sortedKeys.forEach(emoticon => {
-            // Use split/join for exact matches (simpler and more reliable)
-            const parts = result.split(emoticon);
-            if (parts.length > 1) {
-                result = parts.join(emojiMap[emoticon]);
-            }
-        });
+  renderCategories() {
+    const container = document.getElementById('emojiCategories');
+    if (!container) return;
 
-        return result;
+    container.innerHTML = this.categories.map(cat => 
+      `<button class="emoji-picker__cat-btn ${cat.id === this.currentCategory ? 'emoji-picker__cat-btn--active' : ''}" 
+              data-category="${cat.id}" title="${cat.label}">${cat.icon}</button>`
+    ).join('');
+  },
+
+  renderEmojis(category) {
+    const container = document.getElementById('emojiGrid');
+    if (!container) return;
+
+    const emojis = this.emojis[category] || [];
+    container.innerHTML = emojis.map(emoji => 
+      `<button class="emoji-picker__emoji" data-emoji="${emoji}">${emoji}</button>`
+    ).join('');
+    
+    this.currentCategory = category;
+  },
+
+  bindEvents() {
+    // Category buttons
+    const catContainer = document.getElementById('emojiCategories');
+    if (catContainer) {
+      catContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.emoji-picker__cat-btn');
+        if (!btn) return;
+        
+        // Update active
+        catContainer.querySelectorAll('.emoji-picker__cat-btn').forEach(b => 
+          b.classList.remove('emoji-picker__cat-btn--active'));
+        btn.classList.add('emoji-picker__cat-btn--active');
+        
+        this.renderEmojis(btn.dataset.category);
+      });
     }
 
-    // Format text with basic markdown-like syntax
-    function formatText(text) {
-        let formatted = text;
-
-        // Bold: **text**
-        formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
-        // Italic: *text*
-        formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
-
-        // Code: `text`
-        formatted = formatted.replace(/`(.+?)`/g, '<code style="background:#333;padding:1px 4px;border-radius:2px;font-family:monospace;">$1</code>');
-
-        // URLs
-        formatted = formatted.replace(
-            /(https?:\/\/[^\s<]+)/g,
-            '<a href="$1" target="_blank" rel="noopener" style="color:var(--neon-cyan);text-decoration:underline;">$1</a>'
-        );
-
-        return formatted;
+    // Emoji selection
+    const grid = document.getElementById('emojiGrid');
+    if (grid) {
+      grid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.emoji-picker__emoji');
+        if (!btn) return;
+        
+        if (this.onSelect) {
+          this.onSelect(btn.dataset.emoji);
+        }
+      });
     }
 
-    // Full processing pipeline
-    function process(text) {
-        let result = escapeHtml(text);
-        result = parse(result);
-        result = formatText(result);
-        return result;
+    // Search
+    const search = document.getElementById('emojiSearch');
+    if (search) {
+      search.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+          this.renderEmojis(this.currentCategory);
+          return;
+        }
+        
+        // Search across all categories
+        const allEmojis = Object.values(this.emojis).flat();
+        const grid = document.getElementById('emojiGrid');
+        grid.innerHTML = allEmojis.map(emoji => 
+          `<button class="emoji-picker__emoji" data-emoji="${emoji}">${emoji}</button>`
+        ).join('');
+      });
     }
+  },
 
-    // Escape HTML to prevent XSS
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+  toggle() {
+    const picker = document.getElementById('emojiPicker');
+    if (!picker) return;
+    
+    this.isOpen = !this.isOpen;
+    if (this.isOpen) {
+      picker.classList.add('emoji-picker--open');
+    } else {
+      picker.classList.remove('emoji-picker--open');
     }
+  },
 
-    return { parse, formatText, process, escapeHtml };
-})();
+  close() {
+    const picker = document.getElementById('emojiPicker');
+    if (!picker) return;
+    
+    this.isOpen = false;
+    picker.classList.remove('emoji-picker--open');
+  }
+};

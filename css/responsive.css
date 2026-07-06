@@ -1,242 +1,121 @@
 /* ============================================
    iCHAT — Responsive Styles
-   Mobile & tablet adaptations
    ============================================ */
 
-/* ─── TABLET (< 900px) ─── */
-@media (max-width: 900px) {
-    /* Lobby */
-    .lobby-content {
-        flex-direction: column;
-    }
-
-    .lobby-rooms-window {
-        width: 100%;
-    }
-
-    .lobby-rooms-list {
-        max-height: 250px;
-    }
-
-    /* Chat */
-    .chat-container {
-        flex-direction: column;
-    }
-
-    .buddy-list-window {
-        width: 100%;
-        max-height: 150px;
-        order: -1;
-    }
-
-    .buddy-list-body {
-        flex-direction: row;
-    }
-
-    .buddy-list-content {
-        flex: 1;
-    }
-
-    .buddy-count {
-        writing-mode: horizontal-tb;
-        border-top: none;
-        border-left: 1px solid #DDD;
-        padding: var(--sp-2) var(--sp-3);
-        display: flex;
-        align-items: center;
-    }
-
-    .buddy-list-section {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--sp-1);
-        margin-bottom: var(--sp-1);
-    }
-
-    .buddy-list-section-title {
-        width: 100%;
-        margin-bottom: var(--sp-1);
-    }
-
-    .buddy-item {
-        padding: var(--sp-1);
-    }
+/* ── Tablet (≤ 1024px) ───────────────────── */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 320px;
+  }
 }
 
-/* ─── MOBILE (< 600px) ─── */
-@media (max-width: 600px) {
-    /* Login */
-    .login-logo-title {
-        font-size: 18px;
-        letter-spacing: 2px;
-    }
+/* ── Mobile (≤ 768px) ────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 100%;
+    --header-height: 60px;
+  }
 
-    .login-logo-subtitle {
-        font-size: 14px;
-    }
+  .chat-app {
+    position: relative;
+  }
 
-    .login-dialog {
-        max-width: 100%;
-    }
+  .sidebar {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    width: 100%;
+    transition: transform var(--transition-slow);
+  }
 
-    .avatar-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: var(--sp-2);
-    }
+  .sidebar--hidden {
+    transform: translateX(-100%);
+  }
 
-    .avatar-option-icon {
-        font-size: 22px;
-    }
+  .chat-main {
+    width: 100%;
+  }
 
-    .avatar-option-name {
-        font-size: 8px;
-    }
+  .chat-header__back {
+    display: flex;
+  }
 
-    .login-badges {
-        gap: var(--sp-1);
-    }
+  .chat-empty {
+    display: none;
+  }
 
-    /* Lobby */
-    .lobby-content {
-        padding: var(--sp-2);
-        gap: var(--sp-2);
-    }
+  .message {
+    max-width: 85%;
+  }
 
-    .lobby-rooms-list {
-        max-height: 200px;
-    }
+  .chat-messages {
+    padding: var(--space-4);
+  }
 
-    .lobby-welcome-body {
-        padding: var(--sp-3);
-        gap: var(--sp-3);
-    }
+  .chat-input {
+    padding: var(--space-3) var(--space-4);
+  }
 
-    .lobby-welcome-icon {
-        font-size: 36px;
-    }
+  .emoji-picker {
+    left: var(--space-4);
+    right: var(--space-4);
+    width: auto;
+    bottom: calc(var(--input-height) + var(--space-2));
+  }
 
-    .lobby-welcome-title {
-        font-size: var(--fs-pixel-md);
-    }
+  .emoji-picker__grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
 
-    .lobby-footer {
-        padding: var(--sp-2);
-        gap: var(--sp-2);
-        flex-direction: column;
-    }
+  /* Login responsive */
+  .login-card {
+    padding: var(--space-8) var(--space-6);
+    border-radius: var(--radius-2xl);
+  }
 
-    /* Chat */
-    .chat-container {
-        padding: var(--sp-1);
-        gap: var(--sp-1);
-    }
+  .login-logo__title {
+    font-size: var(--text-2xl);
+  }
 
-    .buddy-list-window {
-        max-height: 120px;
-    }
+  .login-logo__icon {
+    width: 64px;
+    height: 64px;
+  }
 
-    .chat-toolbar {
-        overflow-x: auto;
-        gap: var(--sp-1);
-    }
+  .login-logo__icon svg {
+    width: 36px;
+    height: 36px;
+  }
 
-    .chat-toolbar-btn {
-        font-size: 10px;
-        padding: var(--sp-1);
-        white-space: nowrap;
-    }
-
-    .chat-messages {
-        font-size: var(--fs-md);
-    }
-
-    .chat-input {
-        font-size: var(--fs-md);
-    }
-
-    .chat-send-btn {
-        font-size: 8px;
-        padding: var(--sp-2) var(--sp-3);
-        min-width: 50px;
-    }
-
-    .room-info-bar {
-        font-size: 10px;
-    }
-
-    .win95-statusbar {
-        font-size: 9px;
-    }
-
-    .win95-taskbar {
-        height: 28px;
-    }
-
-    .win95-start-btn {
-        font-size: 10px;
-        padding: 1px 4px;
-    }
-
-    /* Settings panel */
-    .settings-panel {
-        width: 90%;
-    }
+  .login-features {
+    gap: var(--space-4);
+  }
 }
 
-/* ─── SMALL MOBILE (< 400px) ─── */
-@media (max-width: 400px) {
-    .login-logo-title {
-        font-size: 14px;
-    }
+/* ── Small Mobile (≤ 480px) ──────────────── */
+@media (max-width: 480px) {
+  .login-card {
+    padding: var(--space-6) var(--space-5);
+  }
 
-    .avatar-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  .login-features {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .color-grid {
-        gap: var(--sp-1);
-    }
+  .emoji-picker__grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
 
-    .color-option {
-        width: 22px;
-        height: 22px;
-    }
-
-    .lobby-welcome-title {
-        font-size: 10px;
-    }
-
-    .chat-toolbar-btn span:last-child {
-        display: none; /* Hide text, show only icons */
-    }
+  .modal {
+    max-width: 95vw;
+    border-radius: var(--radius-xl);
+  }
 }
 
-/* ─── HOVER DEVICES ONLY ─── */
-@media (hover: hover) {
-    .room-item:hover {
-        background: #E8E8FF;
-    }
-
-    .buddy-item:hover {
-        background: var(--win-menu-highlight);
-        color: var(--win-titlebar-text);
-    }
-}
-
-/* ─── REDUCED MOTION ─── */
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-
-    .retro-marquee-content {
-        animation: none;
-        padding-left: 0;
-    }
-
-    .crt-on::after {
-        display: none;
-    }
+/* ── Large Screens (≥ 1440px) ────────────── */
+@media (min-width: 1440px) {
+  :root {
+    --sidebar-width: 420px;
+  }
 }
