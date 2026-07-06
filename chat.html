@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="iCHAT — Retro 90s chat room. Chat in real-time with friends!">
+    <title>iCHAT — Chat Room</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/windows95.css">
+    <link rel="stylesheet" href="css/effects.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="crt-on">
+
+    <div class="chat-page" id="chat-page">
+        <div class="chat-container">
+
+            <!-- ═══ MAIN CHAT WINDOW ═══ -->
+            <div class="win95-window chat-main-window">
+                <!-- Title Bar -->
+                <div class="win95-titlebar">
+                    <span class="win95-titlebar-icon">💬</span>
+                    <span class="win95-titlebar-text" id="chat-title-text">iCHAT — General Chat</span>
+                    <div class="win95-titlebar-buttons">
+                        <button class="win95-titlebar-btn" title="Minimize">_</button>
+                        <button class="win95-titlebar-btn" title="Maximize">□</button>
+                        <button class="win95-titlebar-btn close" title="Close" onclick="window.location.href='lobby.html'">✕</button>
+                    </div>
+                </div>
+
+                <!-- Room Info -->
+                <div class="room-info-bar">
+                    <span class="room-info-name" id="room-info-name">💬 General Chat</span>
+                    <span class="room-info-separator">|</span>
+                    <span id="room-info-desc">The main hangout — talk about anything!</span>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="chat-toolbar">
+                    <button class="chat-toolbar-btn" id="btn-back" title="Back to Lobby">🏠 Lobby</button>
+                    <div class="chat-toolbar-separator"></div>
+                    <button class="chat-toolbar-btn active" id="btn-sound" title="Toggle Sound">🔊 Sound</button>
+                    <button class="chat-toolbar-btn active" id="btn-crt" title="Toggle CRT Effect">📺 CRT</button>
+                    <div class="chat-toolbar-separator"></div>
+                    <button class="chat-toolbar-btn" id="btn-settings" title="Settings">⚙️ Settings</button>
+                    <div class="chat-toolbar-spacer"></div>
+                    <button class="chat-toolbar-btn" id="btn-logout" title="Logout">🚪 Logout</button>
+                </div>
+
+                <!-- Chat Body -->
+                <div class="chat-body">
+                    <!-- Messages Area -->
+                    <div class="chat-messages-container">
+                        <div class="chat-messages bg-pixel-grid win95-scroll" id="chat-messages">
+                            <!-- Messages rendered here by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typing-indicator"></div>
+
+                    <!-- Input Area -->
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrapper">
+                            <input type="text" 
+                                   id="chat-input" 
+                                   class="chat-input" 
+                                   placeholder="Type a message... (/help for commands)" 
+                                   maxlength="500"
+                                   autocomplete="off"
+                                   spellcheck="false">
+                            <span class="chat-char-count" id="chat-char-count">0/500</span>
+                        </div>
+                        <button class="win95-btn chat-send-btn" id="send-btn">Send ➤</button>
+                    </div>
+                </div>
+
+                <!-- Status Bar -->
+                <div class="win95-statusbar">
+                    <div class="win95-statusbar-section flex" id="status-room">Room: General Chat</div>
+                    <div class="win95-statusbar-section" id="status-users">👥 0</div>
+                    <div class="win95-statusbar-section" id="status-connection">🟢 Connected</div>
+                </div>
+            </div>
+
+            <!-- ═══ BUDDY LIST SIDEBAR ═══ -->
+            <div class="win95-window buddy-list-window">
+                <!-- Title Bar -->
+                <div class="win95-titlebar">
+                    <span class="win95-titlebar-icon">👥</span>
+                    <span class="win95-titlebar-text">Buddy List</span>
+                    <div class="win95-titlebar-buttons">
+                        <button class="win95-titlebar-btn" title="Minimize">_</button>
+                    </div>
+                </div>
+
+                <!-- Buddy List Body -->
+                <div class="buddy-list-body">
+                    <div class="buddy-list-content win95-scroll" id="buddy-list-content">
+                        <div class="buddy-list-section">
+                            <div class="buddy-list-section-title">Connecting...</div>
+                        </div>
+                    </div>
+                    <div class="buddy-count" id="buddy-count">0 users online</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ═══ TASKBAR ═══ -->
+        <div class="win95-taskbar">
+            <button class="win95-start-btn" onclick="window.location.href='lobby.html'">
+                <span>🖥️</span>
+                <span>Start</span>
+            </button>
+            <div class="win95-raised" style="flex:1; padding: 2px 6px; font-family: var(--font-system); font-size: 11px;">
+                💬 iCHAT - <span id="taskbar-room">General Chat</span>
+            </div>
+            <div class="win95-sunken" style="padding: 2px 8px;">
+                <span class="led-digit" id="taskbar-clock" style="font-size: 13px;">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ SETTINGS PANEL (hidden by default) ═══ -->
+    <div class="win95-window settings-panel" id="settings-panel">
+        <div class="win95-titlebar">
+            <span class="win95-titlebar-icon">⚙️</span>
+            <span class="win95-titlebar-text">Settings</span>
+            <div class="win95-titlebar-buttons">
+                <button class="win95-titlebar-btn close" onclick="toggleSettingsPanel()">✕</button>
+            </div>
+        </div>
+        <div class="settings-body">
+            <div class="settings-row">
+                <label class="win95-checkbox">
+                    <input type="checkbox" id="setting-crt" checked>
+                    <span>CRT Scanlines Effect</span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <label class="win95-checkbox">
+                    <input type="checkbox" id="setting-sound" checked>
+                    <span>Sound Effects</span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <label for="setting-font-size" style="font-family: var(--font-system); font-size: 12px;">Font Size:</label>
+                <select id="setting-font-size" class="win95-input" style="width: 100px;">
+                    <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </div>
+            <div class="settings-actions">
+                <button class="win95-btn" onclick="toggleSettingsPanel()">Cancel</button>
+                <button class="win95-btn win95-btn-primary" onclick="saveSettings()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS (order matters!) -->
+    <script src="js/config.js"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/sounds.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/emoji.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/realtime.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/drag.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/chat.js"></script>
+
+    <style>
+        /* Font size variants */
+        .chat-messages.fs-small { font-size: 13px; }
+        .chat-messages.fs-medium { font-size: 16px; }
+        .chat-messages.fs-large { font-size: 20px; }
+    </style>
+</body>
+</html>

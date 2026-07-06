@@ -1,0 +1,473 @@
+/* ============================================
+   iCHAT — Chat Page Styles
+   Windows 95 chat interface
+   ============================================ */
+
+/* ─── PAGE LAYOUT ─── */
+.chat-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--win-desktop);
+    overflow: hidden;
+}
+
+/* ─── MAIN CONTAINER ─── */
+.chat-container {
+    flex: 1;
+    display: flex;
+    padding: var(--sp-3);
+    gap: var(--sp-3);
+    overflow: hidden;
+    padding-bottom: 36px; /* Room for taskbar */
+}
+
+/* ─── CHAT MAIN WINDOW ─── */
+.chat-main-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.chat-main-window .win95-titlebar {
+    cursor: default;
+}
+
+.chat-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--win-bg);
+    padding: var(--sp-2);
+    gap: var(--sp-2);
+    overflow: hidden;
+}
+
+/* ─── TOOLBAR ─── */
+.chat-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-1) var(--sp-2);
+    background: var(--win-bg);
+    border-bottom: 1px solid var(--win-border-sunken-outer);
+}
+
+.chat-toolbar-btn {
+    background: var(--win-bg);
+    border: 1px solid transparent;
+    padding: var(--sp-1) var(--sp-2);
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    cursor: pointer;
+    color: var(--win-text);
+}
+
+.chat-toolbar-btn:hover {
+    border: 1px solid;
+    border-color: var(--win-border-raised-outer) var(--win-border-sunken-outer)
+                  var(--win-border-sunken-outer) var(--win-border-raised-outer);
+}
+
+.chat-toolbar-btn:active {
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+}
+
+.chat-toolbar-btn.active {
+    background: #D0D0D0;
+    border: 1px solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+}
+
+.chat-toolbar-separator {
+    width: 2px;
+    height: 20px;
+    background: var(--win-border-sunken-outer);
+    border-right: 1px solid var(--win-border-raised-outer);
+    margin: 0 var(--sp-1);
+}
+
+.chat-toolbar-spacer {
+    flex: 1;
+}
+
+/* ─── MESSAGES AREA ─── */
+.chat-messages-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.chat-messages {
+    height: 100%;
+    overflow-y: auto;
+    padding: var(--sp-3);
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lg);
+    line-height: 1.5;
+    background: #000;
+    color: #CCC;
+    border: var(--border-width) solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+}
+
+.chat-messages.bg-pixel-grid {
+    background: #000;
+    background-image: 
+        linear-gradient(rgba(0, 255, 65, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.02) 1px, transparent 1px);
+    background-size: 4px 4px;
+}
+
+/* ─── MESSAGE STYLES ─── */
+.chat-msg {
+    padding: var(--sp-1) 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.chat-msg.msg-enter {
+    animation: msg-slide-in 0.15s ease-out;
+}
+
+.chat-msg-time {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.chat-msg-user {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chat-msg-user:hover {
+    text-decoration: underline;
+}
+
+.chat-msg-text {
+    color: #DDD;
+}
+
+/* System messages */
+.chat-msg.system {
+    color: var(--neon-yellow);
+    font-style: italic;
+    padding-left: var(--sp-5);
+}
+
+.chat-msg.system .chat-msg-text {
+    color: var(--neon-yellow);
+}
+
+/* Action messages (/me) */
+.chat-msg.action {
+    font-style: italic;
+    padding-left: var(--sp-5);
+}
+
+.chat-msg.action .chat-msg-text {
+    font-style: italic;
+}
+
+/* Whisper messages */
+.chat-msg.whisper {
+    background: rgba(155, 89, 182, 0.1);
+    border-left: 3px solid var(--neon-purple);
+    padding-left: var(--sp-3);
+}
+
+.chat-msg.whisper .chat-msg-text {
+    color: var(--neon-purple);
+}
+
+/* Roll messages */
+.chat-msg.roll {
+    text-align: center;
+    padding: var(--sp-2) 0;
+}
+
+.chat-msg.roll .chat-msg-text {
+    color: var(--neon-yellow);
+    font-size: 1.1em;
+}
+
+/* ─── INPUT AREA ─── */
+.chat-input-area {
+    display: flex;
+    gap: var(--sp-2);
+    padding-top: var(--sp-2);
+}
+
+.chat-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.chat-input {
+    width: 100%;
+    padding: var(--sp-3);
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lg);
+    background: var(--win-input-bg);
+    color: var(--win-text);
+    border: var(--border-width) solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+}
+
+.chat-input:focus {
+    outline: none;
+}
+
+.chat-input::placeholder {
+    color: #AAA;
+}
+
+.chat-char-count {
+    position: absolute;
+    right: var(--sp-3);
+    bottom: var(--sp-1);
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    color: var(--win-text-disabled);
+}
+
+.chat-send-btn {
+    font-family: var(--font-pixel);
+    font-size: var(--fs-pixel-sm);
+    padding: var(--sp-3) var(--sp-5);
+    min-width: 80px;
+    white-space: nowrap;
+}
+
+/* ─── BUDDY LIST (Right Sidebar) ─── */
+.buddy-list-window {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.buddy-list-body {
+    flex: 1;
+    background: var(--win-bg);
+    padding: var(--sp-2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.buddy-list-content {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--win-input-bg);
+    border: var(--border-width) solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+    padding: var(--sp-2);
+}
+
+.buddy-list-section {
+    margin-bottom: var(--sp-3);
+}
+
+.buddy-list-section-title {
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    font-weight: bold;
+    color: var(--win-text-disabled);
+    padding: var(--sp-1) 0;
+    border-bottom: 1px solid #DDD;
+    margin-bottom: var(--sp-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.buddy-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-1) var(--sp-2);
+    font-family: var(--font-system);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.buddy-item:hover {
+    background: var(--win-menu-highlight);
+    color: var(--win-titlebar-text);
+}
+
+.buddy-item-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.buddy-item-status.online { background: var(--status-online); box-shadow: 0 0 4px var(--status-online); }
+.buddy-item-status.away { background: var(--status-away); }
+.buddy-item-status.busy { background: var(--status-busy); }
+.buddy-item-status.offline { background: var(--status-offline); }
+
+.buddy-item-avatar {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.buddy-item-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.buddy-count {
+    text-align: center;
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    color: var(--win-text-disabled);
+    padding: var(--sp-2);
+    border-top: 1px solid #DDD;
+    margin-top: auto;
+}
+
+/* ─── TYPING INDICATOR ─── */
+.typing-indicator {
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    color: var(--win-text-disabled);
+    padding: var(--sp-1) var(--sp-3);
+    min-height: 18px;
+    font-style: italic;
+}
+
+/* ─── ROOM INFO BAR ─── */
+.room-info-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--win-bg);
+    border-bottom: 1px solid var(--win-border-sunken-outer);
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    color: var(--win-text-disabled);
+}
+
+.room-info-name {
+    font-weight: bold;
+    color: var(--win-text);
+}
+
+.room-info-separator {
+    color: var(--win-border-sunken-outer);
+}
+
+/* ─── WHISPER POPUP ─── */
+.whisper-window {
+    position: fixed;
+    width: 300px;
+    z-index: var(--z-modal);
+    display: none;
+}
+
+.whisper-window.visible {
+    display: flex;
+    flex-direction: column;
+}
+
+.whisper-body {
+    background: var(--win-bg);
+    padding: var(--sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.whisper-messages {
+    height: 150px;
+    overflow-y: auto;
+    background: #000;
+    color: #CCC;
+    font-family: var(--font-terminal);
+    font-size: var(--fs-md);
+    padding: var(--sp-3);
+    border: var(--border-width) solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+}
+
+.whisper-input-area {
+    display: flex;
+    gap: var(--sp-2);
+}
+
+.whisper-input {
+    flex: 1;
+    padding: var(--sp-2);
+    font-family: var(--font-terminal);
+    font-size: var(--fs-md);
+}
+
+/* ─── SETTINGS PANEL ─── */
+.settings-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    z-index: var(--z-modal);
+    display: none;
+}
+
+.settings-panel.visible {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-body {
+    background: var(--win-bg);
+    padding: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-system);
+    font-size: var(--fs-sm);
+}
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--sp-3);
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--win-border-sunken-outer);
+}
+
+/* ─── NOTIFICATION DOT ─── */
+.notification-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--neon-red);
+    border-radius: 50%;
+    display: none;
+}
+
+.notification-dot.visible {
+    display: inline-block;
+    animation: blink-anim 1s step-end infinite;
+}
