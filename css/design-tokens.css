@@ -1,0 +1,125 @@
+/* ============================================
+   iCHAT — Design Tokens
+   Retro 90s color palette, typography & spacing
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+    /* ─── Windows 95 System Colors ─── */
+    --win-bg:              #C0C0C0;
+    --win-bg-dark:         #808080;
+    --win-bg-darker:       #404040;
+    --win-bg-light:        #DFDFDF;
+    --win-bg-white:        #FFFFFF;
+    --win-border-raised-outer: #DFDFDF;
+    --win-border-raised-inner: #FFFFFF;
+    --win-border-sunken-outer: #808080;
+    --win-border-sunken-inner: #404040;
+    --win-titlebar:        #000080;
+    --win-titlebar-active: #1084D0;
+    --win-titlebar-text:   #FFFFFF;
+    --win-text:            #000000;
+    --win-text-disabled:   #808080;
+    --win-input-bg:        #FFFFFF;
+    --win-menu-highlight:  #000080;
+    --win-desktop:         #008080;
+
+    /* ─── Neon Accent Colors ─── */
+    --neon-green:    #00FF41;
+    --neon-pink:     #FF00FF;
+    --neon-cyan:     #00FFFF;
+    --neon-yellow:   #FFD700;
+    --neon-red:      #FF0000;
+    --neon-orange:   #FF6600;
+    --neon-purple:   #9B59B6;
+    --neon-blue:     #0066FF;
+
+    /* ─── Status Colors ─── */
+    --status-online:  #00FF41;
+    --status-away:    #FFD700;
+    --status-busy:    #FF0000;
+    --status-offline: #808080;
+
+    /* ─── Chat User Colors (rotating) ─── */
+    --user-color-1:  #00FF41;
+    --user-color-2:  #FF00FF;
+    --user-color-3:  #00FFFF;
+    --user-color-4:  #FFD700;
+    --user-color-5:  #FF6600;
+    --user-color-6:  #9B59B6;
+    --user-color-7:  #0066FF;
+    --user-color-8:  #FF4444;
+
+    /* ─── Typography ─── */
+    --font-pixel:    'Press Start 2P', monospace;
+    --font-terminal: 'VT323', 'Courier New', monospace;
+    --font-system:   'Microsoft Sans Serif', 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
+
+    --fs-xs:     10px;
+    --fs-sm:     12px;
+    --fs-md:     14px;
+    --fs-lg:     16px;
+    --fs-xl:     20px;
+    --fs-2xl:    24px;
+    --fs-3xl:    32px;
+    --fs-pixel-sm: 8px;
+    --fs-pixel-md: 12px;
+    --fs-pixel-lg: 16px;
+
+    /* ─── Spacing ─── */
+    --sp-1:  2px;
+    --sp-2:  4px;
+    --sp-3:  8px;
+    --sp-4:  12px;
+    --sp-5:  16px;
+    --sp-6:  20px;
+    --sp-7:  24px;
+    --sp-8:  32px;
+    --sp-9:  48px;
+    --sp-10: 64px;
+
+    /* ─── Borders ─── */
+    --border-width: 2px;
+    --border-width-thick: 3px;
+
+    /* ─── Shadows ─── */
+    --shadow-window: 2px 2px 0px #000000;
+    --shadow-glow-green: 0 0 5px #00FF41, 0 0 10px #00FF41, 0 0 20px #00FF41;
+    --shadow-glow-pink:  0 0 5px #FF00FF, 0 0 10px #FF00FF, 0 0 20px #FF00FF;
+    --shadow-glow-cyan:  0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 20px #00FFFF;
+
+    /* ─── Z-Indexes ─── */
+    --z-base:      1;
+    --z-window:    10;
+    --z-modal:     100;
+    --z-tooltip:   500;
+    --z-overlay:   900;
+    --z-crt:       9999;
+
+    /* ─── Transitions ─── */
+    --transition-fast: 100ms ease;
+    --transition-normal: 200ms ease;
+
+    /* ─── Background pattern ─── */
+    --bg-pattern: repeating-conic-gradient(
+        #1a1a2e 0% 25%, 
+        #16213e 0% 50%
+    ) 50% / 4px 4px;
+
+    --bg-stars: radial-gradient(
+        1px 1px at 20px 30px, #00FF41, transparent
+    ),
+    radial-gradient(
+        1px 1px at 40px 70px, #FF00FF, transparent
+    ),
+    radial-gradient(
+        1px 1px at 90px 40px, #00FFFF, transparent
+    ),
+    radial-gradient(
+        1px 1px at 130px 80px, #FFD700, transparent
+    ),
+    radial-gradient(
+        1px 1px at 160px 30px, #00FF41, transparent
+    );
+}
