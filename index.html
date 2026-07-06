@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="iCHAT — A retro 90s chat experience. Connect, chat, and relive the golden age of the internet!">
+    <title>iCHAT — Welcome</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/windows95.css">
+    <link rel="stylesheet" href="css/effects.css">
+    <link rel="stylesheet" href="css/login.css">
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-starfield crt-on">
+
+    <main class="login-page" id="login-page">
+
+        <!-- Logo -->
+        <div class="login-logo">
+            <span class="login-logo-icon">🖥️</span>
+            <h1 class="login-logo-title glow-cyan">iCHAT</h1>
+            <p class="login-logo-subtitle glow-green glow-pulse">~ The Retro Chat Experience ~</p>
+        </div>
+
+        <!-- Login Dialog Window -->
+        <div class="win95-window login-dialog win-open" id="login-dialog">
+            <!-- Title Bar -->
+            <div class="win95-titlebar">
+                <span class="win95-titlebar-icon">🔑</span>
+                <span class="win95-titlebar-text">Connect to iCHAT</span>
+                <div class="win95-titlebar-buttons">
+                    <button class="win95-titlebar-btn" title="Minimize">_</button>
+                    <button class="win95-titlebar-btn" title="Maximize">□</button>
+                    <button class="win95-titlebar-btn close" title="Close">✕</button>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div class="login-dialog-body" id="login-form">
+
+                <!-- Screen Name -->
+                <div class="login-field">
+                    <label for="screen-name-input">Choose your Screen Name:</label>
+                    <input type="text" 
+                           id="screen-name-input" 
+                           class="win95-input" 
+                           placeholder="CyberKid99" 
+                           maxlength="16"
+                           autocomplete="off"
+                           spellcheck="false">
+                    <span class="char-count" id="char-count">0/16</span>
+                </div>
+
+                <!-- Avatar Selection -->
+                <div class="avatar-section">
+                    <span class="avatar-section-title">Pick your Avatar:</span>
+                    <div class="avatar-grid" id="avatar-grid">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Color Selection -->
+                <div class="color-section">
+                    <span class="color-section-title">Choose your Text Color:</span>
+                    <div class="color-grid" id="color-grid">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-section">
+                    <div class="win95-groupbox">
+                        <span class="win95-groupbox-title">Preview</span>
+                        <div class="preview-message">
+                            <span class="preview-timestamp led-digit">[12:00:00] </span>
+                            <span class="preview-username" id="preview-username">&lt;YourName&gt;</span>
+                            <span class="preview-text" id="preview-text"> Hello, World! Welcome to iCHAT! 🖥️</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="login-error" id="login-error"></div>
+
+                <!-- Connect Button -->
+                <div class="login-actions">
+                    <button class="win95-btn win95-btn-primary login-connect-btn" id="connect-btn">
+                        ⚡ CONNECT
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="login-loading" id="login-loading">
+                <span class="login-loading-text led-digit">Initializing modem...</span>
+                <div class="win95-progress" style="width: 100%; max-width: 300px;">
+                    <div class="win95-progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="login-footer">
+            <p class="login-footer-text">Best viewed in Netscape Navigator 4.0 @ 800x600</p>
+            <div class="login-badges">
+                <span class="retro-badge badge-html">HTML5</span>
+                <span class="retro-badge badge-css">CSS3</span>
+                <span class="retro-badge badge-js">JS</span>
+                <span class="retro-badge badge-sb">Supabase</span>
+                <span class="retro-badge badge-cf">Cloudflare</span>
+            </div>
+            <p class="under-construction blink">Under Construction</p>
+        </footer>
+
+    </main>
+
+    <!-- JS -->
+    <script src="js/config.js"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/sounds.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+/* ============================================
+   iCHAT — Login Page Styles
+   Welcome screen with Windows 95 dialog
+   ============================================ */
+
+/* ─── PAGE LAYOUT ─── */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-5);
+    position: relative;
+}
+
+/* ─── LOGO AREA ─── */
+.login-logo {
+    text-align: center;
+    margin-bottom: var(--sp-8);
+    animation: logo-float 3s ease-in-out infinite;
+}
+
+@keyframes logo-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.login-logo-icon {
+    font-size: 48px;
+    margin-bottom: var(--sp-3);
+    display: block;
+}
+
+.login-logo-title {
+    font-family: var(--font-pixel);
+    font-size: var(--fs-2xl);
+    color: var(--neon-cyan);
+    text-shadow: 
+        0 0 10px rgba(0, 255, 255, 0.5),
+        0 0 20px rgba(0, 255, 255, 0.3),
+        3px 3px 0px #000080;
+    letter-spacing: 4px;
+    margin-bottom: var(--sp-3);
+}
+
+.login-logo-subtitle {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-xl);
+    color: var(--neon-green);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.4);
+    letter-spacing: 2px;
+}
+
+/* ─── LOGIN DIALOG ─── */
+.login-dialog {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-dialog-body {
+    padding: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+/* ─── SCREEN NAME INPUT ─── */
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.login-field label {
+    font-family: var(--font-system);
+    font-size: var(--fs-sm);
+    color: var(--win-text);
+}
+
+.login-field .win95-input {
+    width: 100%;
+    padding: var(--sp-3);
+    font-size: var(--fs-md);
+}
+
+.login-field .char-count {
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    color: var(--win-text-disabled);
+    text-align: right;
+}
+
+/* ─── AVATAR SELECTION ─── */
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+}
+
+.avatar-section-title {
+    font-family: var(--font-system);
+    font-size: var(--fs-sm);
+    color: var(--win-text);
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-3);
+}
+
+.avatar-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-3);
+    border: 2px solid transparent;
+    background: var(--win-input-bg);
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.avatar-option:hover {
+    transform: scale(1.05);
+    border-color: var(--win-titlebar);
+}
+
+.avatar-option.selected {
+    border: 2px solid var(--win-titlebar);
+    background: #CCE0FF;
+}
+
+.avatar-option-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.avatar-option-name {
+    font-family: var(--font-system);
+    font-size: var(--fs-xs);
+    color: var(--win-text-disabled);
+}
+
+/* ─── COLOR PICKER ─── */
+.color-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+}
+
+.color-section-title {
+    font-family: var(--font-system);
+    font-size: var(--fs-sm);
+    color: var(--win-text);
+}
+
+.color-grid {
+    display: flex;
+    gap: var(--sp-2);
+    flex-wrap: wrap;
+}
+
+.color-option {
+    width: 28px;
+    height: 28px;
+    border: 2px solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.color-option:hover {
+    transform: scale(1.15);
+}
+
+.color-option.selected {
+    border-color: #000;
+    outline: 2px solid var(--neon-yellow);
+    outline-offset: 1px;
+}
+
+/* ─── PREVIEW ─── */
+.preview-section {
+    padding: var(--sp-3);
+}
+
+.preview-message {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lg);
+    padding: var(--sp-3);
+    background: #000;
+    border: 2px solid;
+    border-color: var(--win-border-sunken-outer) var(--win-border-raised-outer)
+                  var(--win-border-raised-outer) var(--win-border-sunken-outer);
+}
+
+.preview-timestamp {
+    color: var(--win-text-disabled);
+}
+
+.preview-username {
+    font-weight: bold;
+}
+
+.preview-text {
+    color: #CCC;
+}
+
+/* ─── CONNECT BUTTON ─── */
+.login-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--sp-3);
+    padding-top: var(--sp-2);
+}
+
+.login-connect-btn {
+    font-family: var(--font-pixel);
+    font-size: var(--fs-pixel-sm);
+    padding: var(--sp-3) var(--sp-8);
+    min-width: 160px;
+    letter-spacing: 1px;
+}
+
+.login-connect-btn:hover:not(:disabled) {
+    background: #D4D4D4;
+}
+
+/* ─── ERROR MESSAGE ─── */
+.login-error {
+    font-family: var(--font-system);
+    font-size: var(--fs-sm);
+    color: var(--neon-red);
+    text-align: center;
+    min-height: 18px;
+    padding: var(--sp-1);
+}
+
+/* ─── FOOTER ─── */
+.login-footer {
+    margin-top: var(--sp-8);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    align-items: center;
+}
+
+.login-footer-text {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-md);
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.login-badges {
+    display: flex;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Badge styles */
+.badge-html {
+    background: linear-gradient(135deg, #E44D26, #F16529);
+    color: #FFF;
+}
+
+.badge-css {
+    background: linear-gradient(135deg, #264DE4, #2965F1);
+    color: #FFF;
+}
+
+.badge-js {
+    background: linear-gradient(135deg, #F7DF1E, #E8D44D);
+    color: #000;
+}
+
+.badge-cf {
+    background: linear-gradient(135deg, #F38020, #FAAD3F);
+    color: #FFF;
+}
+
+.badge-sb {
+    background: linear-gradient(135deg, #3ECF8E, #2A9D6F);
+    color: #FFF;
+}
+
+/* ─── LOADING STATE ─── */
+.login-loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+}
+
+.login-loading.visible {
+    display: flex;
+}
+
+.login-loading-text {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lg);
+    color: var(--neon-green);
+}
+
+.login-form.hidden {
+    display: none;
+}
