@@ -1,0 +1,42 @@
+{
+  "name": "rawsh",
+  "version": "1.0.0",
+  "description": "روش — منصة سوشيال ميديا مصرية كاملة بروح البوب-آرت الريترو، مبنية على Supabase بدون أي build step",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Ahmed Shaban <dear.ahmed5005@gmail.com> (https://github.com/Lord-shaban)",
+  "homepage": "https://github.com/Lord-shaban/rawsh#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lord-shaban/rawsh.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lord-shaban/rawsh/issues"
+  },
+  "keywords": [
+    "social-network",
+    "supabase",
+    "realtime",
+    "vanilla-js",
+    "arabic",
+    "rtl",
+    "retro",
+    "y2k",
+    "neobrutalism",
+    "pwa",
+    "cloudflare-pages",
+    "no-build"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "start": "node scripts/dev-server.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

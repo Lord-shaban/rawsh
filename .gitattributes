@@ -1,0 +1,13 @@
+# اضبط نهايات السطور عشان الويندوز واللينكس يتفقوا
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.webp binary
+*.ico binary
+*.woff2 binary
+
+# اللغات اللي GitHub هيحسبها (متحسبش الأصول والتوثيق)
+docs/**        linguist-documentation
+*.md           linguist-documentation
+supabase/*.sql linguist-language=PLpgSQL

@@ -1,0 +1,76 @@
+name: 🐞 بلاغ عن مشكلة
+description: حاجة مش شغالة زي ما المفروض؟ قولنا.
+title: "[bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكرًا إنك بتساعدنا نخلي روش أحسن ✦
+        لو سمحت املا التفاصيل دي عشان نقدر نوصل للمشكلة بسرعة.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: إيه اللي حصل؟
+      description: اوصف المشكلة بالظبط.
+      placeholder: لما بدوس على زرار اللايك، العداد مابيتغيرش…
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: خطوات إعادة المشكلة
+      description: إزاي نعمل نفس اللي حصل معاك؟
+      placeholder: |
+        1. ادخل على الفيد
+        2. دوس على…
+        3. المفروض يحصل… بس اللي بيحصل…
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: كنت متوقع إيه؟
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: المشكلة فين؟
+      options:
+        - الفيد والبوستات
+        - الستوريز
+        - الرسايل
+        - الإشعارات
+        - البروفايل والإعدادات
+        - الدخول والتسجيل
+        - الشكل والتصميم (CSS)
+        - قاعدة البيانات / Supabase
+        - حاجة تانية
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: المتصفح والجهاز
+      placeholder: Chrome 140 على ويندوز 11 / Safari على آيفون 15
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: أخطاء الكونسول
+      description: افتح DevTools (F12) ← Console وانسخ أي أخطاء حمرا.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: صور أو فيديو
+      description: اسحب أي صورة هنا لو فيه حاجة مرئية.

@@ -1,0 +1,57 @@
+name: ✦ اقتراح ميزة
+description: عندك فكرة تخلي روش أروش؟
+title: "[feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        الأفكار الحلوة هي اللي بتبني المنصة 🪩
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: الفكرة بتحل إيه؟
+      description: إيه الحاجة الناقصة أو المزعجة دلوقتي؟
+      placeholder: مفيش طريقة أحفظ بوست في مجموعات…
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: الحل اللي في دماغك
+      description: اوصف الميزة وهي شغالة.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: الميزة في أنهي جزء؟
+      options:
+        - الفيد والبوستات
+        - الستوريز
+        - الرسايل
+        - الإشعارات
+        - البروفايل
+        - البحث والاستكشاف
+        - التصميم والهوية
+        - الأداء
+        - حاجة تانية
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: بدايل فكرت فيها
+      description: اختياري — أي طريقة تانية جربتها أو فكرت فيها.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: تأكيدات
+      options:
+        - label: دوّرت في الـ issues المفتوحة ومحدش طلب الفكرة دي قبلي
+          required: true

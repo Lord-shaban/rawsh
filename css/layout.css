@@ -1,0 +1,452 @@
+/* ============================================================
+   روش — layout: الشل، الهيدر، النڤ، الودجتس، الريسبونسڤ
+   ============================================================ */
+
+/* ---------- شاشة البداية ---------- */
+.boot {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.boot-logo {
+  font-family: var(--f-disp);
+  font-size: clamp(64px, 14vw, 120px);
+  line-height: 1.15;
+  position: relative;
+  z-index: 1;
+  color: var(--yl);
+  -webkit-text-stroke: 1.5px var(--ink-const);
+  text-shadow:
+    -2px 2px 0 var(--ink-const),
+    -4px 4px 0 var(--or),
+    -6px 6px 0 var(--or),
+    -8px 8px 0 var(--or2),
+    -10px 10px 0 var(--ink-const),
+    -16px 18px 26px rgba(0,0,0,.4);
+  animation: boot-bounce 2.2s ease infinite;
+}
+@keyframes boot-bounce {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+.boot-star {
+  position: absolute;
+  width: 420px; height: 420px;
+  background: var(--pk);
+  clip-path: polygon(50% 0%, 59% 33%, 91% 20%, 70% 47%, 100% 50%, 70% 53%, 91% 80%, 59% 67%, 50% 100%, 41% 67%, 9% 80%, 30% 53%, 0% 50%, 30% 47%, 9% 20%, 41% 33%);
+  opacity: .5;
+  animation: spin-slow 30s linear infinite;
+}
+.boot-tag { font-family: var(--f-disp); font-weight: 600; color: var(--muted); z-index: 1; }
+
+/* ---------- الشل ---------- */
+#shell { min-height: 100dvh; display: flex; flex-direction: column; }
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-inline: 18px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: var(--bw) solid var(--line);
+}
+.logo {
+  font-family: var(--f-disp);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.2;
+  color: var(--or);
+  text-shadow: -1.5px 1.5px 0 var(--ink-const), -3px 3px 0 var(--yl);
+  cursor: pointer;
+  user-select: none;
+  transition: transform .15s ease;
+  text-decoration: none !important;
+  position: relative;
+  padding-inline-end: 16px;
+}
+.logo:hover { transform: rotate(-3deg) scale(1.05); }
+.logo::after {
+  content: '✦';
+  position: absolute;
+  top: -4px;
+  inset-inline-end: 0;
+  font-size: 14px;
+  color: var(--pk);
+  text-shadow: none;
+  animation: spin-slow 8s linear infinite;
+}
+
+.header-search { flex: 1; max-width: 420px; position: relative; }
+.header-search .input { padding: 8px 40px 8px 14px; border-radius: 999px; font-size: 14px; }
+.header-search > svg {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  inset-inline-start: 13px;
+  width: 18px; height: 18px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.search-drop {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline: 0;
+  background: var(--card);
+  border: var(--bw) solid var(--line);
+  border-radius: 16px;
+  box-shadow: -6px 6px 0 var(--sh);
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 8px;
+  z-index: 950;
+}
+
+.header-actions { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; }
+.streak-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-disp);
+  font-weight: 700;
+  font-size: 14px;
+  background: var(--yl);
+  color: var(--ink-const);
+  padding: 4px 12px;
+  border: 2px solid var(--ink-const);
+  border-radius: 999px;
+  box-shadow: -2.5px 2.5px 0 var(--sh);
+  cursor: default;
+}
+
+.badge-wrap { position: relative; }
+.badge-dot {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 4px;
+  display: grid;
+  place-items: center;
+  background: var(--rd);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  border: 2px solid var(--paper);
+  pointer-events: none;
+}
+
+/* ---------- الجريد الرئيسي ---------- */
+.main-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 630px) 320px;
+  gap: 26px;
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding: 22px 18px 90px;
+  align-items: start;
+}
+
+/* ---------- النڤ ---------- */
+.nav { position: sticky; top: calc(var(--header-h) + 18px); display: flex; flex-direction: column; gap: 6px; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 16px;
+  border-radius: 15px;
+  border: var(--bw) solid transparent;
+  font-family: var(--f-disp);
+  font-weight: 600;
+  font-size: 16.5px;
+  color: var(--ink);
+  cursor: pointer;
+  background: transparent;
+  transition: background .15s ease, transform .15s ease;
+  text-decoration: none !important;
+  position: relative;
+}
+.nav-item svg { width: 23px; height: 23px; flex: none; }
+.nav-item:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); transform: translateX(-3px); }
+.nav-item.active {
+  background: var(--card);
+  border-color: var(--line);
+  box-shadow: -4px 4px 0 var(--sh);
+}
+.nav-item.active::before {
+  content: '✦';
+  position: absolute;
+  inset-inline-end: 12px;
+  color: var(--pk);
+  font-size: 13px;
+}
+.nav-item .badge-dot { position: static; margin-inline-start: auto; border-color: var(--card); }
+.nav-compose { margin-top: 10px; width: 100%; }
+.nav-foot { margin-top: 18px; display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- الودجتس ---------- */
+.widgets { position: sticky; top: calc(var(--header-h) + 18px); display: flex; flex-direction: column; gap: 18px; }
+.widget { padding: 0; overflow: hidden; }
+.widget-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  font-family: var(--f-disp);
+  font-weight: 700;
+  font-size: 15.5px;
+  border-bottom: var(--bw) solid var(--line);
+  background: var(--card2);
+}
+.widget-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.widget-body .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.widget-foot {
+  padding: 8px 16px 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* ---------- منطقة الصفحة ---------- */
+#page { min-width: 0; }
+.page-title {
+  font-family: var(--f-disp);
+  font-weight: 700;
+  font-size: 24px;
+  margin: 2px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-title .back-btn { margin-inline-end: 2px; }
+
+/* ---------- بوتوم نڤ (موبايل) ---------- */
+.bottomnav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  z-index: 900;
+  background: var(--card);
+  border-top: var(--bw) solid var(--line);
+  padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
+  justify-content: space-around;
+  align-items: center;
+}
+.bottomnav .nav-item {
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 12px;
+  font-size: 11px;
+  border: 0;
+  box-shadow: none;
+}
+.bottomnav .nav-item.active { background: transparent; color: var(--or); }
+.bottomnav .nav-item.active::before { display: none; }
+.bottomnav .nav-item svg { width: 24px; height: 24px; }
+.bottomnav .badge-dot { position: absolute; top: 0; inset-inline-end: 6px; margin: 0; }
+
+.fab {
+  display: none;
+  position: fixed;
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  inset-inline-start: 18px;
+  z-index: 890;
+  width: 58px; height: 58px;
+  border-radius: 18px;
+  background: var(--or);
+  color: #fff;
+  border: var(--bw) solid var(--ink-const);
+  box-shadow: -5px 5px 0 var(--sh);
+  cursor: pointer;
+  place-items: center;
+  transition: transform .15s ease;
+}
+.fab svg { width: 26px; height: 26px; }
+.fab:active { transform: translate(-4px, 4px); box-shadow: 0 0 0 var(--sh); }
+
+/* ---------- صفحة الدخول ---------- */
+.auth-wrap {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+.auth-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px;
+  background: var(--paper2);
+  border-inline-start: var(--bw) solid var(--line);
+  overflow: hidden;
+  text-align: center;
+}
+.auth-hero .hero-star {
+  position: absolute;
+  width: min(560px, 90%);
+  aspect-ratio: 1;
+  background: var(--pk);
+  clip-path: polygon(50% 0%, 59% 33%, 91% 20%, 70% 47%, 100% 50%, 70% 53%, 91% 80%, 59% 67%, 50% 100%, 41% 67%, 9% 80%, 30% 53%, 0% 50%, 30% 47%, 9% 20%, 41% 33%);
+  opacity: .55;
+  animation: spin-slow 32s linear infinite;
+}
+.auth-hero .hero-star.s2 {
+  width: min(700px, 110%);
+  background: var(--or);
+  opacity: .28;
+  animation-direction: reverse;
+  animation-duration: 44s;
+}
+.auth-logo {
+  position: relative;
+  z-index: 1;
+  font-family: var(--f-disp);
+  font-size: clamp(80px, 11vw, 150px);
+  line-height: 1.15;
+  color: var(--yl);
+  -webkit-text-stroke: 1.5px var(--ink-const);
+  text-shadow:
+    -2px 2px 0 var(--ink-const),
+    -4px 4px 0 var(--or),
+    -6px 6px 0 var(--or),
+    -8px 8px 0 var(--or2),
+    -10px 10px 0 var(--ink-const),
+    -18px 20px 30px rgba(0,0,0,.45);
+  rotate: -2deg;
+}
+.auth-tag {
+  position: relative;
+  z-index: 1;
+  font-family: var(--f-disp);
+  font-weight: 700;
+  font-size: clamp(17px, 2.2vw, 24px);
+  background: var(--ink-const);
+  color: var(--yl);
+  padding: 8px 22px;
+  border-radius: 999px;
+  rotate: 1.5deg;
+  box-shadow: -4px 4px 0 rgba(0,0,0,.35);
+}
+.auth-stickers {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 14px;
+  margin-top: 26px;
+  font-size: 34px;
+}
+.auth-stickers span {
+  display: grid;
+  place-items: center;
+  width: 64px; height: 64px;
+  background: var(--card);
+  border: var(--bw) solid var(--ink-const);
+  border-radius: 18px;
+  box-shadow: -4px 4px 0 var(--sh);
+  animation: float-y 3.4s ease-in-out infinite;
+}
+.auth-stickers span:nth-child(2) { animation-delay: .5s; rotate: 4deg; }
+.auth-stickers span:nth-child(3) { animation-delay: 1s; rotate: -4deg; }
+.auth-stickers span:nth-child(4) { animation-delay: 1.5s; rotate: 2deg; }
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+.auth-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 34px 22px;
+  gap: 18px;
+}
+.auth-card { width: 100%; max-width: 430px; }
+.auth-tabs { display: flex; gap: 8px; padding: 14px 18px 0; }
+.auth-tabs button {
+  flex: 1;
+  padding: 9px;
+  font-family: var(--f-disp);
+  font-weight: 700;
+  font-size: 15px;
+  background: transparent;
+  border: var(--bw) solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.auth-tabs button.active {
+  background: var(--yl);
+  color: var(--ink-const);
+  border-color: var(--line);
+  box-shadow: -3px 3px 0 var(--sh);
+}
+.auth-form { padding: 18px; }
+.auth-foot {
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  padding-bottom: 8px;
+}
+.auth-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+/* ---------- ريسبونسڤ ---------- */
+@media (max-width: 1150px) {
+  .main-grid { grid-template-columns: 220px minmax(0, 1fr); }
+  .widgets { display: none; }
+}
+@media (max-width: 900px) {
+  .main-grid { grid-template-columns: 76px minmax(0, 1fr); gap: 16px; }
+  .nav-item span { display: none; }
+  .nav-item { justify-content: center; padding: 12px; }
+  .nav-item.active::before { display: none; }
+  .nav-item .badge-dot { position: absolute; top: 4px; inset-inline-end: 4px; margin: 0; }
+  .nav-compose span { display: none; }
+  .nav-compose { padding: 12px; }
+  .nav-foot .nav-item span { display: none; }
+}
+@media (max-width: 720px) {
+  .main-grid { grid-template-columns: minmax(0, 1fr); padding: 14px 12px 120px; }
+  .nav { display: none; }
+  .bottomnav { display: flex; }
+  .fab { display: grid; }
+  .header { padding-inline: 12px; gap: 8px; }
+  .header-search { display: none; }
+  .logo { font-size: 26px; }
+  .streak-chip { font-size: 12.5px; padding: 3px 9px; }
+  .auth-wrap { grid-template-columns: 1fr; }
+  .auth-hero { min-height: 34dvh; padding: 26px; border-inline-start: 0; border-bottom: var(--bw) solid var(--line); }
+  .auth-logo { font-size: 72px; }
+  .auth-stickers { margin-top: 12px; font-size: 24px; }
+  .auth-stickers span { width: 48px; height: 48px; border-radius: 13px; }
+  .overlay { padding: 10px; align-items: end; }
+  .overlay > .win { max-width: 100%; }
+}
+
+/* شاشة الـ 404 */
+.notfound {
+  text-align: center;
+  padding: 60px 20px;
+}
+.notfound .nf-title {
+  font-family: var(--f-disp);
+  font-size: 66px;
+  color: var(--pk2);
+  -webkit-text-stroke: 1px var(--ink-const);
+  text-shadow: -2px 2px 0 var(--ink-const), -4px 4px 0 var(--pk), -6px 6px 0 var(--ink-const);
+}

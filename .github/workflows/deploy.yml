@@ -1,0 +1,41 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: رفع على Cloudflare Pages
+    runs-on: ubuntu-latest
+    # بيتخطى تلقائيًا لو الأسرار مش مضبوطة — عشان مايظهرش فشل كاذب
+    if: ${{ github.event_name == 'workflow_dispatch' || github.repository_owner != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        id: guard
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=تخطّي الرفع::ضيف CLOUDFLARE_API_TOKEN و CLOUDFLARE_ACCOUNT_ID في Settings → Secrets عشان الرفع التلقائي يشتغل."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish
+        if: steps.guard.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy . --project-name=rawsh --commit-dirty=true

@@ -1,22 +1,27 @@
-# Dependencies
+# تبعيات
 node_modules/
+package-lock.json
 
-# OS files
+# نظام التشغيل
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Editor files
-.vscode/
+# محررات
+.vscode/*
+!.vscode/extensions.json
 .idea/
-*.swp
-*.swo
 
-# Environment
+# لوجات ومؤقتات
+*.log
+npm-debug.log*
+.wrangler/
+.cache/
+dist/
+scratch/
+tmp/
+
+# أسرار محلية (لو ضفت أي حاجة خاصة)
 .env
 .env.local
-.env.production
-
-# Build output
-dist/
-build/
+js/config.local.js

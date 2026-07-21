@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 سؤال أو نقاش
+    url: https://github.com/Lord-shaban/rawsh/discussions
+    about: لو عندك سؤال أو فكرة لسه مش واضحة، ابدأ نقاش بدل ما تفتح issue.
+  - name: 🔐 ثغرة أمنية
+    url: https://github.com/Lord-shaban/rawsh/security/advisories/new
+    about: بلاش تفتح issue عامة بثغرة — بلّغ عنها بسرية من هنا.
