@@ -1,6 +1,6 @@
 {
   "name": "rawsh",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "روش — منصة سوشيال ميديا مصرية كاملة بروح البوب-آرت الريترو، مبنية على Supabase بدون أي build step",
   "type": "module",
   "private": true,

@@ -1,7 +1,7 @@
 // روش — الصفحات: فيد، بوست وتعليقات، بروفايل، إكسبلور، إشعارات، محفوظات
 import { el, esc, linkify, timeAgo, nfmt, modal, toast, toastErr, sfx, autoResize, debounce, dropMenu, confirmDlg } from './lib.js';
 import { store, api, arErr, cachedProfile } from './sb.js';
-import { avatarEl, nameHTML, followButton, userRow, emptyState, skeletonPost, spinnerRow, postCard, icon, observeViews, infiniteScroll } from './components.js';
+import { avatarEl, nameHTML, followButton, userRow, emptyState, skeletonPost, spinnerRow, postCard, icon, observeViews, infiniteScroll, attachMention, recordAudio, audioPlayer } from './components.js';
 import { renderStoriesBar } from './stories.js';
 import { openComposer } from './compose.js';
 import { CONFIG } from './config.js';
@@ -156,12 +156,34 @@ export function postDetailPage(root, { id }) {
     holder.append(postCard(p, { detail: true, onDeleted: () => { location.hash = '#/'; } }));
 
     /* كومبوزر التعليق */
-    const ta = el('textarea', { class: 'textarea grow', placeholder: 'اكتب تعليق روش…', maxlength: 500 });
+    const ta = el('textarea', { class: 'textarea grow', placeholder: 'اكتب تعليق روش… (@ لمنشن حد)', maxlength: 500 });
+    const audioSlot = el('div', { class: 'comment-audio-preview hidden' });
+    const micBtn = el('button', { class: 'btn btn-ghost btn-icon', html: icon('mic'), title: 'تسجيل صوت' });
     const sendBtn = el('button', { class: 'btn btn-or btn-sm', text: 'علّق ✦' });
     const composer = el('div', { class: 'sticker comment-composer' },
-      avatarEl(store.me, 36, { link: false }), ta, sendBtn);
+      avatarEl(store.me, 36, { link: false }),
+      el('div', { class: 'grow vstack', style: { gap: '6px' } }, ta, audioSlot),
+      micBtn, sendBtn);
     holder.append(composer);
     autoResize(ta);
+    attachMention(ta);
+
+    let cAudio = null;
+    const renderCAudio = () => {
+      audioSlot.innerHTML = '';
+      audioSlot.classList.toggle('hidden', !cAudio);
+      if (!cAudio) return;
+      audioSlot.append(
+        audioPlayer(cAudio.previewUrl),
+        el('button', { class: 'btn btn-sm btn-danger', html: icon('trash'), title: 'شيل', onclick: () => { URL.revokeObjectURL(cAudio.previewUrl); cAudio = null; renderCAudio(); } }),
+      );
+    };
+    micBtn.addEventListener('click', async () => {
+      const rec = await recordAudio();
+      if (!rec) return;
+      cAudio = { blob: rec.blob, seconds: rec.seconds, previewUrl: URL.createObjectURL(rec.blob) };
+      renderCAudio();
+    });
 
     const cmtList = el('div', { class: 'sticker', style: { padding: '6px 16px 14px' } });
     holder.append(cmtList);
@@ -201,13 +223,14 @@ export function postDetailPage(root, { id }) {
         avatarEl(store.me, 28, { link: false }), rta, rbtn);
       afterEl.after(box);
       autoResize(rta);
+      attachMention(rta);
       rta.focus();
       rbtn.addEventListener('click', async () => {
         const txt = rta.value.trim();
         if (!txt || rbtn.disabled) return;
         rbtn.disabled = true;
         try {
-          const c = await api.addComment(p.id, txt, parent.id);
+          const c = await api.addComment(p.id, txt, { parentId: parent.id });
           box.remove();
           addCommentElAfter(c, afterEl);
           sfx.pop();
@@ -241,11 +264,14 @@ export function postDetailPage(root, { id }) {
 
     sendBtn.addEventListener('click', async () => {
       const txt = ta.value.trim();
-      if (!txt || sendBtn.disabled) return;
+      if ((!txt && !cAudio) || sendBtn.disabled) return;
       sendBtn.disabled = true;
       try {
-        const c = await api.addComment(p.id, txt);
+        let audioUrl = null;
+        if (cAudio) { const up = await api.uploadAudio(cAudio.blob, cAudio.seconds); audioUrl = up.url; }
+        const c = await api.addComment(p.id, txt, { audioUrl });
         ta.value = ''; ta.style.height = 'auto';
+        if (cAudio) { URL.revokeObjectURL(cAudio.previewUrl); cAudio = null; renderCAudio(); }
         cmtList.querySelector('.empty-state')?.remove();
         addCommentEl(c, { prepend: true });
         sfx.pop();
@@ -296,7 +322,8 @@ function commentItem(c, { isReply = false, onReply, onDeleted } = {}) {
         el('span', { class: 'comment-name', html: nameHTML(c.author), onclick: () => { location.hash = `#/u/${c.author.username}`; } }),
         el('span', { class: 'muted small', text: '@' + (c.author?.username || '') }),
       ),
-      el('div', { class: 'comment-text', html: linkify(c.content) }),
+      c.content ? el('div', { class: 'comment-text', html: linkify(c.content) }) : null,
+      c.audio_url ? audioPlayer(c.audio_url) : null,
       foot,
     ),
   );

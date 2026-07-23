@@ -1,7 +1,7 @@
-// روش — نافذة إنشاء البوستات: نص + صور/فيديو + استطلاع + إيموجي
+// روش — نافذة إنشاء البوستات: نص + صور/فيديو + صوت + استطلاع + إيموجي + منشن
 import { el, esc, modal, toast, toastErr, sfx, autoResize, pickFile, emojiPicker } from './lib.js';
 import { store, api, arErr } from './sb.js';
-import { avatarEl, icon, nameHTML } from './components.js';
+import { avatarEl, icon, nameHTML, attachMention, recordAudio, audioPlayer } from './components.js';
 import { CONFIG } from './config.js';
 
 export function openComposer({ quote = null, initialText = '', onPosted } = {}) {
@@ -9,6 +9,7 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
   let files = [];         // [{file, kind:'image'|'video', previewUrl}]
   let pollOn = false;
   let posting = false;
+  let audioRec = null;    // {blob, seconds, previewUrl}
 
   const ta = el('textarea', {
     class: 'textarea grow',
@@ -98,6 +99,7 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
   const mediaBtn = el('button', { class: 'btn btn-ghost btn-icon', html: icon('image'), title: 'صور أو فيديو' });
   mediaBtn.addEventListener('click', async () => {
     if (pollOn) return;
+    if (audioRec) { toast('الصوت لوحده من غير ميديا تانية', { emoji: '🎙️' }); return; }
     const hasVideo = files.some((f) => f.kind === 'video');
     if (hasVideo || files.length >= CONFIG.maxImages) { toast('وصلت للحد الأقصى للميديا', { emoji: '🖐️' }); return; }
     const picked = await pickFile('image/*,video/mp4,video/webm,video/quicktime', true);
@@ -119,8 +121,31 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
 
   const pollBtn = el('button', { class: 'btn btn-ghost btn-icon', html: icon('poll'), title: 'استطلاع' });
   pollBtn.addEventListener('click', () => {
-    if (files.length) { toast('الاستطلاع من غير ميديا', { emoji: '📊' }); return; }
+    if (files.length || audioRec) { toast('الاستطلاع لوحده', { emoji: '📊' }); return; }
     togglePoll(!pollOn);
+  });
+
+  /* معاينة الصوت */
+  const audioPreview = el('div', { class: 'compose-audio hidden' });
+  const renderAudio = () => {
+    audioPreview.innerHTML = '';
+    audioPreview.classList.toggle('hidden', !audioRec);
+    if (!audioRec) return;
+    audioPreview.append(
+      audioPlayer(audioRec.previewUrl),
+      el('button', { class: 'btn btn-sm btn-danger', html: icon('trash') + '<span>شيل</span>', onclick: () => {
+        URL.revokeObjectURL(audioRec.previewUrl); audioRec = null; renderAudio(); updateSubmit();
+      } }),
+    );
+  };
+  const micBtn = el('button', { class: 'btn btn-ghost btn-icon', html: icon('mic'), title: 'تسجيل صوت' });
+  micBtn.addEventListener('click', async () => {
+    if (pollOn || files.length) { toast('الصوت لوحده من غير ميديا تانية', { emoji: '🎙️' }); return; }
+    const rec = await recordAudio();
+    if (!rec) return;
+    audioRec = { blob: rec.blob, seconds: rec.seconds, previewUrl: URL.createObjectURL(rec.blob) };
+    renderAudio();
+    updateSubmit();
   });
 
   const emojiBtn = el('button', { class: 'btn btn-ghost btn-icon', html: icon('smile'), title: 'إيموجي' });
@@ -138,7 +163,7 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
     const hasText = ta.value.trim().length > 0;
     const pollOk = !pollOn || pollInputs.filter((i) => i.value.trim()).length >= 2;
     const pollNeedsText = pollOn && !hasText;
-    submitBtn.disabled = posting || ta.value.length > CONFIG.postLimit || (!hasText && !files.length) || !pollOk || pollNeedsText;
+    submitBtn.disabled = posting || ta.value.length > CONFIG.postLimit || (!hasText && !files.length && !audioRec) || !pollOk || pollNeedsText;
   };
 
   submitBtn.addEventListener('click', async () => {
@@ -156,6 +181,7 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
       for (const f of files) {
         media.push(f.kind === 'video' ? await api.uploadVideo(f.file) : await api.uploadImage(f.file));
       }
+      if (audioRec) media.push(await api.uploadAudio(audioRec.blob, audioRec.seconds));
       let poll = null;
       if (pollOn) {
         const options = pollInputs.map((i) => i.value.trim()).filter(Boolean).slice(0, 4);
@@ -174,6 +200,7 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
       sfx.send();
       toast('اتنشر يا نجم ✦', { emoji: '🚀' });
       files.forEach((f) => URL.revokeObjectURL(f.previewUrl));
+      if (audioRec) URL.revokeObjectURL(audioRec.previewUrl);
       m.close();
       store.emit('composed', post);
       onPosted?.(post);
@@ -200,12 +227,14 @@ export function openComposer({ quote = null, initialText = '', onPosted } = {}) 
       el('div', { class: 'q-content', text: (quote.content || '🖼️ ميديا').slice(0, 180) }),
     ) : null,
     previews,
+    audioPreview,
     pollBox,
-    el('div', { class: 'composer-foot' }, mediaBtn, pollBtn, emojiBtn, ring, submitBtn),
+    el('div', { class: 'composer-foot' }, mediaBtn, micBtn, pollBtn, emojiBtn, ring, submitBtn),
   );
 
   const m = modal({ title: quote ? 'اقتباس ✍️' : 'بوست جديد', content: body });
   autoResize(ta);
+  attachMention(ta);
   updateRing();
   updateSubmit();
   setTimeout(() => ta.focus(), 80);

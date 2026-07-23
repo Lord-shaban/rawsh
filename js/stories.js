@@ -1,7 +1,7 @@
 // روش — الستوريز: شريط الدواير، العارض، الإنشاء (صورة/فيديو/نص)
 import { el, esc, timeAgo, modal, toast, toastErr, sfx, pickFile, autoResize, confirmDlg } from './lib.js';
 import { store, api, arErr } from './sb.js';
-import { avatarEl, icon, emptyState, spinnerRow, userRow } from './components.js';
+import { avatarEl, icon, emptyState, spinnerRow, userRow, attachMention } from './components.js';
 
 /* ---------- شريط الستوريز ---------- */
 export async function renderStoriesBar(mount) {
@@ -240,12 +240,14 @@ export function openStoryComposer(onDone) {
       : el('img', { src: previewUrl, style: { maxHeight: '300px', borderRadius: '14px', border: '2.5px solid var(--line)' } }));
     updateSubmit();
   });
-  const captionInp = el('input', { class: 'input', placeholder: 'كابشن (اختياري)…', maxlength: 200, style: { marginTop: '12px' } });
+  const captionInp = el('input', { class: 'input', placeholder: 'كابشن (اختياري)… @ لمنشن حد', maxlength: 200, style: { marginTop: '12px' } });
+  attachMention(captionInp);
   mediaZone.append(pickBtn, previewBox, captionInp);
 
   /* وضع النص */
   const textZone = el('div', { class: 'hidden' });
-  const textTa = el('textarea', { class: 'textarea', placeholder: 'اكتب حاجة روش…', maxlength: 200, style: { minHeight: '80px' } });
+  const textTa = el('textarea', { class: 'textarea', placeholder: 'اكتب حاجة روش… @ لمنشن حد', maxlength: 200, style: { minHeight: '80px' } });
+  attachMention(textTa);
   const textPreview = el('div', {
     class: 'story-text-slide ' + bg,
     style: { height: '260px', borderRadius: '16px', border: '2.5px solid var(--line)', marginTop: '12px' },

@@ -228,14 +228,17 @@ export function modal({ title = '', content, wide = false, barClass = '', onClos
 
 export function confirmDlg(text, { okText = 'أيوة متأكد', cancelText = 'لأ خلاص', danger = true, title = 'متأكد؟' } = {}) {
   return new Promise((resolve) => {
+    // نحسم النتيجة مرة واحدة بس — قفل المودال بيستدعي onClose اللي كان بيسبق resolve(true) ويحسمها false بالغلط
+    let settled = false;
+    const done = (val) => { if (settled) return; settled = true; resolve(val); m.close(); };
     const content = el('div', {},
       el('p', { style: { margin: '0 0 18px', fontWeight: 600, fontSize: '15.5px' }, text: text }),
       el('div', { class: 'hstack', style: { justifyContent: 'flex-end' } },
-        el('button', { class: 'btn', text: cancelText, onclick: () => { m.close(); resolve(false); } }),
-        el('button', { class: 'btn ' + (danger ? 'btn-danger' : 'btn-or'), text: okText, onclick: () => { m.close(); resolve(true); } }),
+        el('button', { class: 'btn', text: cancelText, onclick: () => done(false) }),
+        el('button', { class: 'btn ' + (danger ? 'btn-danger' : 'btn-or'), text: okText, onclick: () => done(true) }),
       ),
     );
-    const m = modal({ title, content, onClose: () => resolve(false) });
+    const m = modal({ title, content, onClose: () => done(false) });
   });
 }
 

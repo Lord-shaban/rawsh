@@ -128,13 +128,21 @@ async function hydrateFlags(rows) {
 export const api = {
   /* ---------- auth ---------- */
   async signUp({ email, password, username, displayName }) {
-    return q(sb.auth.signUp({
+    const data = await q(sb.auth.signUp({
       email, password,
       options: {
         data: { username: username.toLowerCase(), display_name: displayName },
         emailRedirectTo: location.origin + location.pathname,
       },
     }));
+    // الإيميل بيتأكد تلقائيًا في الداتابيز — ادخل مباشرة من غير انتظار تأكيد
+    if (!data.session) {
+      try {
+        const signIn = await sb.auth.signInWithPassword({ email, password });
+        if (signIn.session) return signIn;
+      } catch {}
+    }
+    return data;
   },
   signIn({ email, password }) { return q(sb.auth.signInWithPassword({ email, password })); },
   resendConfirm(email) { return q(sb.auth.resend({ type: 'signup', email })); },
@@ -301,9 +309,11 @@ export const api = {
     }
     return rows;
   },
-  async addComment(postId, content, parentId = null) {
+  async addComment(postId, content, { parentId = null, audioUrl = null } = {}) {
     const row = await q(sb.from('comments').insert({
-      post_id: postId, author_id: store.me.id, content, parent_id: parentId,
+      post_id: postId, author_id: store.me.id,
+      content: (content || '').trim(),
+      parent_id: parentId, audio_url: audioUrl,
     }).select('*').single());
     row.author = store.me;
     return row;
@@ -504,6 +514,12 @@ export const api = {
     const ext = (file.name.split('.').pop() || 'mp4').toLowerCase();
     const url = await this.uploadBlob('media', file, ext, file.type || 'video/mp4');
     return { type: 'video', url };
+  },
+  async uploadAudio(blob, seconds = 0) {
+    const t = blob.type || 'audio/webm';
+    const ext = /mp4|m4a|aac/.test(t) ? 'm4a' : /ogg/.test(t) ? 'ogg' : 'webm';
+    const url = await this.uploadBlob('media', blob, ext, t);
+    return { type: 'audio', url, dur: Math.round(seconds) };
   },
 };
 

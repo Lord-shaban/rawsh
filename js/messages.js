@@ -2,7 +2,7 @@
 // (رد، تفاعلات، تعديل، حذف، نسخ، معاينة صورة، إرسال متفائل، سكرول ذكي)
 import { el, esc, linkify, timeAgo, dayLabel, modal, toast, toastErr, sfx, autoResize, debounce, throttle, pickFile, lightbox, confirmDlg, copy, dropMenu, emojiPicker } from './lib.js';
 import { store, api, arErr, convOtherId, convUnread, cachedProfile, profilesByIds, subscribeConversation, setActiveConv } from './sb.js';
-import { avatarEl, nameHTML, icon, emptyState, spinnerRow, userRow } from './components.js';
+import { avatarEl, nameHTML, icon, emptyState, spinnerRow, userRow, attachMention } from './components.js';
 
 const QUICK_REACTIONS = ['❤️', '😂', '👍', '🔥', '😮', '😢', '🙏', '💯'];
 
@@ -524,6 +524,7 @@ export function messagesPage(root, { id: openId = null } = {}) {
 
     const ta = el('textarea', { class: 'textarea grow', placeholder: 'اكتب رسالة…', rows: 1, maxlength: 2000 });
     autoResize(ta);
+    attachMention(ta);   // قبل هاندلر الإرسال عشان الـ Enter يختار المنشن الأول
     const sendTyping = throttle(() => convSub?.sendTyping(), 1800);
     ta.addEventListener('input', () => { if (ta.value.trim() && !editing) sendTyping(); });
 

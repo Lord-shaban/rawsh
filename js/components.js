@@ -1,5 +1,5 @@
 // روش — مكونات مشتركة: أيقونات، أفاتار، كارت البوست، صفوف ناس
-import { el, esc, linkify, timeAgo, fullTime, nfmt, hashColor, toast, toastErr, sfx, dropMenu, confirmDlg, lightbox, copy } from './lib.js';
+import { el, esc, linkify, timeAgo, fullTime, nfmt, hashColor, toast, toastErr, sfx, dropMenu, confirmDlg, lightbox, copy, debounce, modal } from './lib.js';
 import { store, api, arErr } from './sb.js';
 
 /* ---------- أيقونات ---------- */
@@ -39,6 +39,10 @@ export const ICONS = {
   reply: P('<path d="M9 7 4 12l5 5"/><path d="M4 12h11a5 5 0 0 1 5 5v1"/>'),
   copy: P('<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'),
   chevronDown: P('<path d="m5 9 7 7 7-7"/>'),
+  mic: P('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'),
+  play: P('<path d="M7 5v14l12-7z" fill="currentColor" stroke="none"/>'),
+  pause: P('<rect x="6.5" y="5" width="3.5" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="14" y="5" width="3.5" height="14" rx="1" fill="currentColor" stroke="none"/>'),
+  stopc: P('<rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" stroke="none"/>'),
 };
 export const icon = (name) => ICONS[name] || '';
 
@@ -297,7 +301,10 @@ export function postCard(p, { detail = false, banner = null, onDeleted } = {}) {
   }
 
   const media = p.media || [];
-  if (media.length) card.append(mediaGridEl(media));
+  const visual = media.filter((m) => m.type !== 'audio');
+  const audios = media.filter((m) => m.type === 'audio');
+  if (visual.length) card.append(mediaGridEl(visual));
+  audios.forEach((a) => card.append(audioPlayer(a.url)));
   if (p.poll) card.append(pollEl(p));
   if (p.quote) card.append(quoteCardEl(p.quote));
   else if (p.quote_of && !p.quote) card.append(el('div', { class: 'quote-card muted small', text: 'البوست المقتبس اتمسح 👻' }));
@@ -436,4 +443,237 @@ export function infiniteScroll(sentinel, loadMore) {
   }, { rootMargin: '700px' });
   io.observe(sentinel);
   return { stop: () => io.disconnect(), setDone: (v) => { done = v; } };
+}
+
+/* ============================================================
+   المنشن @ — إكمال تلقائي على أي textarea/input
+   ============================================================ */
+export function attachMention(input) {
+  let box = null, items = [], active = 0, token = null;
+
+  const close = () => { box?.remove(); box = null; token = null; items = []; };
+
+  const findToken = () => {
+    const pos = input.selectionStart;
+    if (pos == null) return null;
+    const before = input.value.slice(0, pos);
+    const m = before.match(/(?:^|[\s\n])@([A-Za-z0-9_]{0,20})$/);
+    if (!m) return null;
+    return { start: pos - m[1].length - 1, query: m[1] };
+  };
+
+  const doSearch = debounce(async () => {
+    if (!token) return;
+    try {
+      const users = token.query
+        ? await api.searchUsers(token.query)
+        : await api.whoToFollow(6);
+      items = (users || []).filter((u) => u.id !== store.me?.id).slice(0, 6);
+      active = 0;
+      renderBox();
+    } catch { close(); }
+  }, 180);
+
+  const renderBox = () => {
+    if (!items.length) { close(); return; }
+    if (!box) { box = el('div', { class: 'mention-box' }); document.body.append(box); }
+    box.innerHTML = '';
+    items.forEach((u, i) => {
+      const row = el('div', { class: 'mention-item' + (i === active ? ' active' : '') },
+        avatarEl(u, 30, { link: false }),
+        el('div', { class: 'grow', style: { minWidth: 0 } },
+          el('div', { class: 'm-name', html: nameHTML(u) }),
+          el('div', { class: 'm-handle', text: '@' + u.username }),
+        ),
+      );
+      row.addEventListener('mousedown', (e) => { e.preventDefault(); pick(u); });
+      box.append(row);
+    });
+    position();
+  };
+
+  const position = () => {
+    const r = input.getBoundingClientRect();
+    const w = Math.min(Math.max(r.width, 220), 320);
+    box.style.width = w + 'px';
+    box.style.insetInlineStart = r.left + 'px';
+    const h = box.offsetHeight || 220;
+    if (r.top - h - 8 > 8) { box.style.top = (r.top - h - 8) + 'px'; }  // فوق الحقل
+    else { box.style.top = (r.bottom + 8) + 'px'; }
+  };
+
+  const pick = (u) => {
+    if (!token) return;
+    const pos = input.selectionStart;
+    const before = input.value.slice(0, token.start);
+    const after = input.value.slice(pos);
+    const insert = '@' + u.username + ' ';
+    input.value = before + insert + after;
+    const np = before.length + insert.length;
+    input.setSelectionRange(np, np);
+    close();
+    input.dispatchEvent(new Event('input'));
+    input.focus();
+  };
+
+  const onInput = () => {
+    token = findToken();
+    if (token) doSearch();
+    else close();
+  };
+  const onKey = (e) => {
+    if (!box || !items.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); e.stopImmediatePropagation(); active = (active + 1) % items.length; renderBox(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); e.stopImmediatePropagation(); active = (active - 1 + items.length) % items.length; renderBox(); }
+    else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); e.stopImmediatePropagation(); pick(items[active]); }
+    else if (e.key === 'Escape') { e.stopImmediatePropagation(); close(); }
+  };
+  const onBlur = () => setTimeout(close, 180);
+
+  input.addEventListener('input', onInput);
+  input.addEventListener('keydown', onKey);   // بيتضاف قبل هاندلر الإرسال فبياخد الأولوية
+  input.addEventListener('blur', onBlur);
+  return { close, destroy() { input.removeEventListener('input', onInput); input.removeEventListener('keydown', onKey); input.removeEventListener('blur', onBlur); close(); } };
+}
+
+/* ============================================================
+   مشغّل الصوت — بستايل روش (موجة + play + وقت)
+   ============================================================ */
+export function audioPlayer(url, { mine = false } = {}) {
+  const BARS = 26;
+  const audio = new Audio();
+  audio.preload = 'metadata';
+  audio.src = url;
+
+  const seed = [...url].reduce((a, c) => a + c.charCodeAt(0), 7);
+  const wave = el('div', { class: 'ap-wave' });
+  for (let i = 0; i < BARS; i++) {
+    const h = 22 + ((seed * (i + 3) * 9301 + 49297) % 233) / 233 * 74;
+    wave.append(el('i', { style: { height: h.toFixed(0) + '%' } }));
+  }
+
+  const fmt = (s) => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const playBtn = el('button', { class: 'ap-btn', html: icon('play'), 'aria-label': 'تشغيل' });
+  const timeEl = el('span', { class: 'ap-time', text: '0:00' });
+
+  audio.addEventListener('loadedmetadata', () => { if (isFinite(audio.duration)) timeEl.textContent = fmt(audio.duration); });
+  audio.addEventListener('timeupdate', () => {
+    const frac = audio.duration ? audio.currentTime / audio.duration : 0;
+    const lit = Math.round(frac * BARS);
+    [...wave.children].forEach((b, i) => b.classList.toggle('on', i < lit));
+    timeEl.textContent = fmt((audio.duration || 0) - audio.currentTime);
+  });
+  const reset = () => { playBtn.innerHTML = icon('play'); [...wave.children].forEach((b) => b.classList.remove('on')); timeEl.textContent = fmt(audio.duration); };
+  audio.addEventListener('ended', reset);
+  audio.addEventListener('pause', () => { playBtn.innerHTML = icon('play'); });
+  audio.addEventListener('play', () => { playBtn.innerHTML = icon('pause'); });
+
+  playBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (audio.paused) {
+      document.querySelectorAll('audio').forEach((a) => { if (a !== audio) a.pause(); });
+      audio.play().catch(() => {});
+    } else audio.pause();
+  });
+  wave.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!audio.duration) return;
+    const r = wave.getBoundingClientRect();
+    audio.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * audio.duration;
+  });
+
+  return el('div', { class: 'audio-player' + (mine ? ' mine' : '') }, playBtn, wave, timeEl);
+}
+
+/* ============================================================
+   مسجّل الصوت — مودال تسجيل (يرجّع Blob أو null)
+   ============================================================ */
+export function recordAudio({ maxSec = 120 } = {}) {
+  return new Promise((resolve) => {
+    let rec = null, chunks = [], stream = null, timer = null, seconds = 0, blob = null, previewUrl = null, settled = false;
+
+    const cleanup = () => {
+      clearInterval(timer);
+      try { if (rec && rec.state !== 'inactive') rec.stop(); } catch {}
+      stream?.getTracks().forEach((t) => t.stop());
+    };
+    const finish = (val) => { if (settled) return; settled = true; cleanup(); if (previewUrl && !val) URL.revokeObjectURL(previewUrl); m.close(); resolve(val ? { blob, seconds } : null); };
+
+    const dot = el('span', { class: 'rec-dot' });
+    const timeEl = el('span', { class: 'rec-time', text: '0:00' });
+    const hint = el('div', { class: 'rec-hint muted', text: 'دوس الزرار عشان تبدأ التسجيل' });
+    const previewSlot = el('div', { class: 'rec-preview' });
+    const bigBtn = el('button', { class: 'btn btn-lg btn-danger rec-main', html: icon('mic') + '<span>سجّل</span>' });
+    const foot = el('div', { class: 'rec-foot hidden' });
+
+    const fmt = (s) => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+
+    const startRec = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch { toastErr('مش قادرين نوصل للمايك — اسمح للموقع يستخدمه'); finish(null); return; }
+      chunks = [];
+      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'].find((t) => MediaRecorder.isTypeSupported?.(t)) || '';
+      rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = () => {
+        blob = new Blob(chunks, { type: (chunks[0]?.type) || rec.mimeType || 'audio/webm' });
+        previewUrl = URL.createObjectURL(blob);
+        showPreview();
+      };
+      rec.start(250);   // timeslice يضمن إطلاق dataavailable دوريًا
+      seconds = 0;
+      dot.classList.add('live');
+      hint.textContent = 'بتسجّل دلوقتي… دوس إيقاف لما تخلص';
+      bigBtn.className = 'btn btn-lg btn-dark rec-main';
+      bigBtn.innerHTML = icon('stopc') + '<span>إيقاف</span>';
+      timer = setInterval(() => {
+        seconds++;
+        timeEl.textContent = fmt(seconds);
+        if (seconds >= maxSec) stopRec();
+      }, 1000);
+    };
+
+    const stopRec = () => {
+      clearInterval(timer);
+      dot.classList.remove('live');
+      try { rec?.stop(); } catch {}
+      stream?.getTracks().forEach((t) => t.stop());
+    };
+
+    const showPreview = () => {
+      hint.textContent = `تسجيل جاهز (${fmt(seconds)}) — تبعته؟`;
+      bigBtn.classList.add('hidden');
+      previewSlot.innerHTML = '';
+      previewSlot.append(audioPlayer(previewUrl));
+      previewSlot.classList.remove('hidden');
+      foot.classList.remove('hidden');
+    };
+
+    bigBtn.addEventListener('click', () => { if (rec && rec.state === 'recording') stopRec(); else startRec(); });
+
+    foot.append(
+      el('button', { class: 'btn', html: icon('mic') + '<span>سجّل تاني</span>', onclick: () => {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        blob = null; previewUrl = null;
+        previewSlot.classList.add('hidden'); previewSlot.innerHTML = '';
+        foot.classList.add('hidden');
+        bigBtn.classList.remove('hidden');
+        timeEl.textContent = '0:00';
+        hint.textContent = 'دوس الزرار عشان تبدأ التسجيل';
+      } }),
+      el('button', { class: 'btn btn-or', html: icon('check') + '<span>استخدم التسجيل</span>', onclick: () => finish(blob) }),
+    );
+
+    const body = el('div', { class: 'rec-body' },
+      el('div', { class: 'rec-status' }, dot, timeEl),
+      hint,
+      previewSlot,
+      bigBtn,
+      foot,
+    );
+    previewSlot.classList.add('hidden');
+
+    const m = modal({ title: 'تسجيل صوتي 🎙️', content: body, onClose: () => finish(null) });
+  });
 }

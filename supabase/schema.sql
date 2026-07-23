@@ -51,10 +51,13 @@ create table public.comments (
   post_id uuid not null references public.posts(id) on delete cascade,
   author_id uuid not null references public.profiles(id) on delete cascade,
   parent_id uuid references public.comments(id) on delete cascade,
-  content text not null check (char_length(content) between 1 and 500),
+  content text not null default '',
+  audio_url text,                                    -- تعليق صوتي (اختياري)
   likes_count int not null default 0,
   replies_count int not null default 0,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  -- نص من 1-500 حرف، أو تعليق صوتي بدون نص
+  constraint comments_content_check check (char_length(content) <= 500 and (char_length(content) between 1 and 500 or audio_url is not null))
 );
 create index comments_post_idx on public.comments (post_id, created_at);
 create index comments_parent_idx on public.comments (parent_id);
@@ -181,6 +184,7 @@ create table public.notifications (
   type text not null check (type in ('like','comment','reply','comment_like','follow','repost','quote','mention')),
   post_id uuid references public.posts(id) on delete cascade,
   comment_id uuid references public.comments(id) on delete cascade,
+  story_id uuid references public.stories(id) on delete cascade,   -- منشن في ستوري
   is_read boolean not null default false,
   created_at timestamptz not null default now()
 );
@@ -188,7 +192,9 @@ create index notifications_user_idx on public.notifications (user_id, created_at
 
 -- ============ التريجرز والدوال ============
 -- (كاملة في migrations المشروع — أهم النقاط:)
+-- auto_confirm_new_user (before insert on auth.users): تأكيد الإيميل تلقائيًا (تسجيل بدون تأكيد بريد)
 -- handle_new_user: إنشاء بروفايل من user_metadata عند التسجيل + أول مستخدم is_verified=true
+-- on_story_insert: استخراج @منشنات من كابشن/نص الستوري وإرسال إشعار mention (بـ story_id)
 -- fn_notify: إشعار بدون تكرار (dedup على user/actor/type/post/comment)
 -- on_post_insert: عدادات + ستريك + استخراج #هاشتاجات (عربي/انجليزي) + @منشنات + إشعار الاقتباس
 -- on_comment_insert/delete: عدادات + إشعارات comment/reply + منشنات
