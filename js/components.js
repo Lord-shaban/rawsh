@@ -36,6 +36,9 @@ export const ICONS = {
   camera: P('<path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="14" r="3.5"/>'),
   back: P('<path d="M4 12h16m0 0-5-5m5 5-5 5"/>'),
   video: P('<rect x="2.5" y="6" width="14" height="12" rx="3"/><path d="m16.5 12 5-3.5v7z"/>'),
+  reply: P('<path d="M9 7 4 12l5 5"/><path d="M4 12h11a5 5 0 0 1 5 5v1"/>'),
+  copy: P('<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'),
+  chevronDown: P('<path d="m5 9 7 7 7-7"/>'),
 };
 export const icon = (name) => ICONS[name] || '';
 

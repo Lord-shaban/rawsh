@@ -167,6 +167,9 @@ create table public.messages (
   sender_id uuid not null references public.profiles(id) on delete cascade,
   content text not null default '' check (char_length(content) <= 2000),
   media_url text,
+  reply_to uuid references public.messages(id) on delete set null,  -- رد على رسالة
+  edited_at timestamptz,                                            -- وقت آخر تعديل
+  reactions jsonb not null default '{}'::jsonb,                     -- {"❤️":["uid1"],"😂":["uid2"]}
   created_at timestamptz not null default now()
 );
 create index messages_conv_idx on public.messages (conversation_id, created_at desc);
@@ -198,6 +201,8 @@ create index notifications_user_idx on public.notifications (user_id, created_at
 -- feed_following(p_limit,p_before) / trending_tags(p_limit) / who_to_follow(p_limit)
 -- register_views(p_ids uuid[]) / poll_vote(p_post,p_idx) / get_or_create_conversation(p_other)
 -- mark_conversation_read(p_conv)
+-- toggle_reaction(p_msg,p_emoji): تبديل تفاعل ذري لأي عضو في المحادثة (FOR UPDATE)
+-- edit_message(p_msg,p_content): تعديل نص الرسالة (الراسل فقط، للرسايل النصية)
 -- كل الدوال security definer بـ set search_path='' والدوال الداخلية مقفولة عن الـ API
 
 -- ============ الأمان ============

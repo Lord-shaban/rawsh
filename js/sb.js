@@ -437,16 +437,18 @@ export const api = {
   },
   async messages(convId, before = null) {
     let b = sb.from('messages').select('*').eq('conversation_id', convId)
-      .order('created_at', { ascending: false }).limit(40);
+      .order('created_at', { ascending: false }).limit(30);
     if (before) b = b.lt('created_at', before);
     const rows = await q(b);
     return rows.reverse();
   },
-  sendMessage(convId, content, media_url = null) {
+  sendMessage(convId, content, media_url = null, reply_to = null) {
     return q(sb.from('messages').insert({
-      conversation_id: convId, sender_id: store.me.id, content, media_url,
+      conversation_id: convId, sender_id: store.me.id, content, media_url, reply_to,
     }).select('*').single());
   },
+  editMessage(id, content) { return q(sb.rpc('edit_message', { p_msg: id, p_content: content })); },
+  toggleReaction(id, emoji) { return q(sb.rpc('toggle_reaction', { p_msg: id, p_emoji: emoji })); },
   deleteMessage(id) { return q(sb.from('messages').delete().eq('id', id)); },
   async markConvRead(convId) {
     const c = store.convs.get(convId);
@@ -609,9 +611,11 @@ export function stopRealtime() {
 }
 
 /* قناة محادثة مفتوحة */
-export function subscribeConversation(convId, { onMessage, onTyping }) {
+export function subscribeConversation(convId, { onMessage, onUpdate, onDelete, onTyping }) {
   const ch = sb.channel('conv-' + convId)
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` }, (p) => onMessage?.(p.new))
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` }, (p) => onUpdate?.(p.new))
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, (p) => onDelete?.(p.old))
     .on('broadcast', { event: 'typing' }, (p) => onTyping?.(p.payload))
     .subscribe();
   return {

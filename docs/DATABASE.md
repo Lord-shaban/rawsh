@@ -60,6 +60,18 @@ check  (user1 < user2)
 
 `user1_read_at` / `user2_read_at` بتحسب الرسايل غير المقروءة وعلامات "✓✓ شافها".
 
+### `messages`
+
+| العمود | النوع | ملاحظات |
+| --- | --- | --- |
+| `content` | text | ≤ 2000 حرف |
+| `media_url` | text | صورة مرفقة (اختياري) |
+| `reply_to` | uuid | رد على رسالة تانية (`ON DELETE SET NULL`) |
+| `edited_at` | timestamptz | وقت آخر تعديل — بيظهر "معدّلة" |
+| `reactions` | jsonb | `{"❤️":["uid1","uid2"],"😂":["uid3"]}` |
+
+التفاعلات محفوظة **داخل صف الرسالة** كـ JSONB بدل جدول منفصل — بيوفّر join في كل عرض. التبديل بيتم ذريًا في `toggle_reaction` بـ `FOR UPDATE` لتجنّب تعارض التزامن.
+
 ### `stories`
 `expires_at` افتراضيًا `now() + 24 hours`، وسياسة القراءة بتخفي المنتهية تلقائيًا.
 
@@ -123,6 +135,12 @@ check  (user1 < user2)
 
 ### `mark_conversation_read(p_conv)` 🔒
 بتحدّث طابع القراءة بتاعك انت بس في المحادثة.
+
+### `toggle_reaction(p_msg, p_emoji)` 🔒
+بتقفل صف الرسالة بـ `FOR UPDATE`، تتأكد إنك عضو في المحادثة، وتضيف أو تشيل تفاعلك على الرسالة. بترجّع الـ `reactions` المحدثة. لو التفاعل بقى فاضي بيتشال المفتاح خالص.
+
+### `edit_message(p_msg, p_content)` 🔒
+بتعدّل نص رسالة نصية — **الراسل فقط** (`sender_id = auth.uid()` و `media_url is null`) — وتحدّث `edited_at`.
 
 > 🔒 = `SECURITY DEFINER` ومحجوبة عن `anon` — للمستخدمين المسجّلين بس.
 > كل دوال الـ Triggers محجوبة عن `anon` و `authenticated` تمامًا.
